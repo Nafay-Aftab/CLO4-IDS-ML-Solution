@@ -67,7 +67,7 @@ Initialize a clean, reproducible project structure, configure `.gitignore`, veri
 ## Phase 1: Data Ingestion & Security Exploratory Data Analysis (EDA)
 
 ### Status
-NOT_STARTED
+COMPLETED
 
 ### Git Branch
 `feature/phase-1-eda`
@@ -107,7 +107,15 @@ Ingest both UNSW-NB15 CSV files, sanitize headers (UTF-8 BOM), separate features
 - Verify figure files exist, are non-empty (>50KB), and contain expected distributions.
 
 ### Completion Evidence
-*(To be recorded by implementation agent)*
+- **Completed:** 2026-09-11 · Phase 0 merge on `main`: `56d1742` (pushed to `origin/main`).
+- **Script:** `python -m src.eda` → `artifacts/eda_summary.json`.
+- **Integrity:** 82,332 + 175,341 = **257,673 rows × 45 cols** (42 features: 3 categorical, 39 numerical). Null cells **0**, ±inf cells **0**, BOM in headers **none** after `utf-8-sig` + strip.
+- **Class balance:** Normal 93,000 (36.1%) vs Attack 164,673 (63.9%). Families: Generic 58,871 · Exploits 44,525 · Fuzzers 24,246 · DoS 16,353 · Reconnaissance 13,987 · Analysis 2,677 · Backdoor 2,329 · Shellcode 1,511 · Worms 174.
+- **Skewness → Log1p insight:** raw skew sbytes **47.92**, dbytes **44.34**, sload **8.93**, dur **8.02**; after log1p **1.15 / 0.33 / −0.41 / 3.35**. sload spans **10 orders of magnitude**, sbytes/dbytes ~5.8. log1p exposes separable Normal/Attack modes (e.g. attack sload peak at log≈18) that are invisible in raw space.
+- **Protocol tail → `handle_unknown='ignore'` insight:** 133 distinct protocols; top-10 cover 93.6% of flows, the other 123 only 6.4%; **126 protocols appear only in attack traffic**. Rare values can be absent from the training fold, so the encoder must map unseen values to an all-zero vector rather than crash.
+- **Correlation insight:** near-perfect collinear pairs (is_ftp_login~ct_ftp_cmd 1.00, trans_depth~ct_flw_http_mthd 1.00, tcprtt~synack 0.996, dpkts~dbytes 0.989) → tree ensembles are preferred (collinearity-insensitive). Strongest |ρ| with label: sttl 0.66, ct_state_ttl 0.586, dload 0.585.
+- **Data-quality caveat (honest ceiling):** 103,989 rows duplicate another row's feature vector; **414 duplicate groups carry conflicting labels** → irreducible error floor for any classifier.
+- **Figures (300 DPI):** `eda_attack_distribution.png` 276 KB · `eda_traffic_volume_skew.png` 566 KB · `eda_top_protocols.png` 202 KB · `eda_feature_correlation.png` 315 KB (all >50 KB ✔).
 
 ---
 

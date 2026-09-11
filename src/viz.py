@@ -43,7 +43,8 @@ def apply_style() -> None:
 
 def save(fig, name: str) -> str:
     path = FIG_DIR / name
-    fig.savefig(path, dpi=FIG_DPI, bbox_inches="tight")
+    # Respect the figure's own facecolor (rcParams would repaint dark figures with the light surface).
+    fig.savefig(path, dpi=FIG_DPI, bbox_inches="tight", facecolor=fig.get_facecolor())
     plt.close(fig)
     return str(path)
 

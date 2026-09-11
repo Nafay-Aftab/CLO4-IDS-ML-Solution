@@ -1,0 +1,80 @@
+{
+  "single_core_by_batch": [
+    {
+      "batch_size": 1,
+      "flows": 1000,
+      "calls": 1000,
+      "total_s": 6.83,
+      "us_per_flow_mean": 6830.314,
+      "us_per_flow_p50": 6689.15,
+      "us_per_flow_p95": 7379.625,
+      "flows_per_s": 146.406
+    },
+    {
+      "batch_size": 10,
+      "flows": 2000,
+      "calls": 200,
+      "total_s": 1.468,
+      "us_per_flow_mean": 734.134,
+      "us_per_flow_p50": 729.69,
+      "us_per_flow_p95": 782.654,
+      "flows_per_s": 1362.148
+    },
+    {
+      "batch_size": 100,
+      "flows": 10000,
+      "calls": 100,
+      "total_s": 1.053,
+      "us_per_flow_mean": 105.335,
+      "us_per_flow_p50": 105.076,
+      "us_per_flow_p95": 110.432,
+      "flows_per_s": 9493.513
+    },
+    {
+      "batch_size": 1000,
+      "flows": 10000,
+      "calls": 10,
+      "total_s": 0.31,
+      "us_per_flow_mean": 31.044,
+      "us_per_flow_p50": 30.901,
+      "us_per_flow_p95": 31.755,
+      "flows_per_s": 32211.96
+    },
+    {
+      "batch_size": 10000,
+      "flows": 10000,
+      "calls": 1,
+      "total_s": 0.184,
+      "us_per_flow_mean": 18.435,
+      "us_per_flow_p50": 18.435,
+      "us_per_flow_p95": 18.435,
+      "flows_per_s": 54243.643
+    }
+  ],
+  "all_cores_10k_batch": {
+    "flows": 10000,
+    "repeats": 5,
+    "median_s": 0.06352530000003753,
+    "us_per_flow": 6.352530000003753,
+    "flows_per_s": 157417.59582393302
+  },
+  "family_classifier": {
+    "train_attack_rows": 131738,
+    "test_attack_rows": 32935,
+    "train_seconds": 4.7,
+    "accuracy": 0.7531,
+    "macro_f1": 0.5676,
+    "recall_by_family": {
+      "Analysis": 0.2449,
+      "Backdoor": 0.1588,
+      "DoS": 0.4295,
+      "Exploits": 0.5646,
+      "Fuzzers": 0.8657,
+      "Generic": 0.9724,
+      "Reconnaissance": 0.8056,
+      "Shellcode": 0.8146,
+      "Worms": 0.5429
+    }
+  },
+  "siem_events": 20
+}

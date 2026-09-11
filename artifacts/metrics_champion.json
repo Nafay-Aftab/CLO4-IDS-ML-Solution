@@ -1,0 +1,119 @@
+{
+  "tuning": {
+    "method": "GridSearchCV 3-fold, scoring=F1",
+    "subsample_rows": 61841,
+    "configs": 24,
+    "seconds": 134.0,
+    "best_params": {
+      "max_depth": null,
+      "min_samples_leaf": 2,
+      "min_samples_split": 5,
+      "n_estimators": 150
+    },
+    "best_cv_f1": 0.952906
+  },
+  "threshold": {
+    "tau_star": 0.5,
+    "rule": "max-recall s.t. FPR<5%",
+    "source": "RF out-of-bag probabilities (train fold)",
+    "oob_at_tau": {
+      "tau": 0.5,
+      "accuracy": 0.948835,
+      "precision": 0.971307,
+      "recall": 0.947942,
+      "f1": 0.959482,
+      "fpr": 0.049583
+    }
+  },
+  "random_forest_tau_star": {
+    "accuracy": 0.947085,
+    "precision": 0.9705,
+    "recall": 0.945954,
+    "f1": 0.95807,
+    "fpr": 0.050914,
+    "fnr": 0.054046,
+    "tn": 17653,
+    "fp": 947,
+    "fn": 1780,
+    "tp": 31155,
+    "roc_auc": 0.991535,
+    "model": "RandomForest (tuned)",
+    "threshold": 0.5,
+    "train_seconds": 15.77,
+    "oob_accuracy": 0.948835
+  },
+  "random_forest_default": {
+    "accuracy": 0.947085,
+    "precision": 0.9705,
+    "recall": 0.945954,
+    "f1": 0.95807,
+    "fpr": 0.050914,
+    "fnr": 0.054046,
+    "tn": 17653,
+    "fp": 947,
+    "fn": 1780,
+    "tp": 31155,
+    "roc_auc": 0.991535,
+    "threshold": 0.5
+  },
+  "lightgbm": {
+    "accuracy": 0.950597,
+    "precision": 0.970899,
+    "recall": 0.951207,
+    "f1": 0.960952,
+    "fpr": 0.050484,
+    "fnr": 0.048793,
+    "tn": 17661,
+    "fp": 939,
+    "fn": 1607,
+    "tp": 31328,
+    "roc_auc": 0.992476,
+    "model": "LightGBM (early-stopped)",
+    "threshold": 0.43,
+    "rule": "max-recall s.t. FPR<5%",
+    "best_iteration": 1023,
+    "train_seconds": 7.49
+  },
+  "decision_tree": {
+    "accuracy": 0.929174,
+    "precision": 0.982852,
+    "recall": 0.904964,
+    "f1": 0.942302,
+    "fpr": 0.027957,
+    "fnr": 0.095036,
+    "tn": 18080,
+    "fp": 520,
+    "fn": 3130,
+    "tp": 29805,
+    "roc_auc": 0.985918,
+    "model": "DecisionTree(max_depth=10, balanced)",
+    "train_seconds": 4.151,
+    "threshold": 0.5,
+    "n_leaves": 336,
+    "depth": 10
+  },
+  "top15_features": {
+    "num__sttl": 0.103113,
+    "num__ct_state_ttl": 0.086173,
+    "num__rate": 0.052822,
+    "log__sbytes": 0.047905,
+    "log__sload": 0.045571,
+    "num__smean": 0.043295,
+    "num__dttl": 0.038471,
+    "num__ct_dst_sport_ltm": 0.037368,
+    "num__ct_dst_src_ltm": 0.037354,
+    "num__ct_srv_dst": 0.036576,
+    "log__dinpkt": 0.033308,
+    "log__dload": 0.031305,
+    "num__ct_srv_src": 0.026444,
+    "log__dbytes": 0.025235,
+    "num__dmean": 0.024678
+  },
+  "acceptance_gates": {
+    "accuracy>=0.95": false,
+    "recall>=0.95": false,
+    "f1>=0.95": true,
+    "fpr<0.05": false
+  },
+  "gates_met": false
+}

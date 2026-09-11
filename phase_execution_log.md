@@ -409,7 +409,7 @@ Benchmark inference latency and throughput, and build a simulated real-time stre
 ## Phase 7: Bespoke Enterprise SOC Web Dashboard (FastAPI + HTML5/CSS3/Chart.js)
 
 ### Status
-NOT_STARTED
+COMPLETED — awaiting CP-2 visual approval from the student
 
 ### Git Branch
 `feature/phase-7-soc-dashboard`
@@ -454,7 +454,17 @@ Develop a high-performance, single-command enterprise SOC Web Dashboard using Fa
 - Launch dashboard, test REST endpoints via curl / automated test script, and verify HTTP 200 responses and valid JSON payloads.
 
 ### Completion Evidence
-*(To be recorded by implementation agent)*
+- **Completed:** 2026-09-11 · Phase 6 merge on `main`: `6544cbc` (pushed).
+- **Launch:** `python -m src.app` → `http://localhost:8000` (single command, zero Node.js/npm; Chart.js 4.4.4 loaded by the browser from jsDelivr, with table-view fallbacks if offline).
+- **Backend (`src/app.py`):** FastAPI with lifespan start-up that loads `models/champion_bundle.joblib` + stage-2 family model and **scores the full test fold live** (telemetry is never hard-coded). Endpoints: `GET /api/telemetry`, `GET /api/presets`, `POST /api/predict/single`, `POST /api/predict/batch`, `GET /api/predict/batch/{token}`, `GET /api/stream/simulated` (SSE), `GET /api/sample.csv`.
+- **Front-end (`src/web/`):** `index.html`, `styles.css` (cyber dark `#0B132B`/`#1C2541`/`#1E293B`, glass cards, `@keyframes pulse` LEDs, responsive grid, reduced-motion support), `app.js` (vanilla JS). Four views: Executive Telemetry (4 KPI cards with target badges, model dot-plot, interactive confusion matrix with cost tooltips, Gini importance, per-family recall, metric table view); Live Threat Feed (SSE, counters, P(attack) timeline with τ* line, SIEM incident table flagging missed attacks and false alarms); Flow Inspector (9-field form, 4 presets, animated gauge with τ* tick, class & stage-2 family probabilities); Batch CSV Predictor (drag-and-drop, upload progress, ≤ 6-segment breakdown doughnut, labelled-data metrics, preview, enriched CSV download).
+- **Automated validation:** `python -m src.validate_dashboard` → `artifacts/dashboard_validation.json` — **PASSED**: all endpoints HTTP 200 with valid payloads; telemetry = recall 0.9460 / FPR 0.0509 / acc 0.9471 (matches Phase 4); 4 presets classified correctly (Normal p=0.000; DoS 0.968; Exploits 0.990; Reconnaissance 0.960); partial form defaults 38 features; 2,000-row sample batch: acc 0.9405, recall 0.9322, FPR 0.0455; enriched CSV download OK; schema-less CSV rejected with HTTP 400; SSE stream delivers events.
+- **Honesty decisions made during build:**
+  - UNSW-NB15 contains **no benign TLS/`ssl` flows** (all 16 ssl rows are attacks) → the contract's "Legitimate HTTPS Traffic" preset is honestly relabelled **"Legitimate Web Traffic (HTTP)"**.
+  - Presets use the **median-scored flow of each class** (disclosed in the UI) — the first seeded-random benign pick happened to be a false positive (p=0.56); a representative example avoids misrepresenting typical behaviour, while false alarms remain visible in the live feed and telemetry.
+  - Batch breakdown is a doughnut capped at 6 segments (Normal + top-4 families + Other) for legibility.
+- **Bugs found & fixed in validation:** empty preset mask crashed start-up; deprecated `on_event` → lifespan; stream chart smoothing overshot [0,1] (tension → 0) and float tick labels; indistinguishable gray model colours.
+- **Screenshots (headless Edge, 2× DPI, kiosk mode `?view=…&demo=1` via `python -m src.capture_dashboard`):** `figures/dashboard_telemetry.png`, `dashboard_live_siem.png`, `dashboard_manual_inspector.png`, `dashboard_batch_prediction.png`.
 
 ---
 

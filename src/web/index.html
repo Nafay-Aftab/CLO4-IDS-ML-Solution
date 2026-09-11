@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SecureNet SOC · ML-NIDS Dashboard</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
+  <link rel="stylesheet" href="/static/styles.css">
+  <!-- Chart.js loaded by the browser from a public CDN: zero npm / Node.js tooling. -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js" defer></script>
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+<div class="bg-grid"></div>
+
+<aside class="sidebar">
+  <div class="brand">
+    <div class="logo">◈</div>
+    <div>
+      <div class="brand-name">SecureNet SOC</div>
+      <div class="brand-sub">ML-Augmented NIDS</div>
+    </div>
+  </div>
+  <nav>
+    <button class="nav-item active" data-view="telemetry"><span class="ico">▦</span>Executive Telemetry</button>
+    <button class="nav-item" data-view="stream"><span class="ico">⟳</span>Live Threat Feed<span class="pulse-dot" id="nav-live-dot"></span></button>
+    <button class="nav-item" data-view="inspector"><span class="ico">⌖</span>Flow Inspector</button>
+    <button class="nav-item" data-view="batch"><span class="ico">⇪</span>Batch CSV Predictor</button>
+  </nav>
+  <div class="sidebar-foot">
+    <div class="model-chip"><span class="led led-green"></span><span id="model-name">Loading model…</span></div>
+    <div class="muted small">Decision threshold τ* = <span id="tau" class="mono">–</span></div>
+    <div class="muted small">Dataset: UNSW-NB15 (257,673 flows)</div>
+  </div>
+</aside>
+
+<main>
+  <header class="topbar glass">
+    <div>
+      <h1 id="view-title">Executive Telemetry</h1>
+      <p class="muted" id="view-sub">Champion model KPIs measured on the untouched test fold</p>
+    </div>
+    <div class="student">
+      <div class="student-name" id="st-name">Muhammad Nafay Aftab</div>
+      <div class="muted small" id="st-meta">03-134222-087 · BSCS-8A · Information Security (CLO 4) · Dr. Nadeem Sarwar</div>
+    </div>
+    <div class="status-pill"><span class="pulse"></span>SENSOR ONLINE</div>
+  </header>
+
+  <!-- ===================== 1. TELEMETRY ===================== -->
+  <section id="view-telemetry" class="view active">
+    <div class="kpi-grid">
+      <div class="kpi glass" style="--accent: var(--cyan)">
+        <div class="kpi-label">Total flows analysed</div>
+        <div class="kpi-value" id="kpi-flows">–</div>
+        <div class="kpi-foot muted" id="kpi-flows-foot">untouched 20 % test fold</div>
+      </div>
+      <div class="kpi glass" style="--accent: var(--safe)">
+        <div class="kpi-label">Attack detection rate (recall)</div>
+        <div class="kpi-value" id="kpi-recall">–</div>
+        <div class="kpi-foot" id="kpi-recall-foot"></div>
+      </div>
+      <div class="kpi glass" style="--accent: var(--amber)">
+        <div class="kpi-label">False alarm rate (FPR)</div>
+        <div class="kpi-value" id="kpi-fpr">–</div>
+        <div class="kpi-foot" id="kpi-fpr-foot"></div>
+      </div>
+      <div class="kpi glass" style="--accent: #a78bfa">
+        <div class="kpi-label">Mean flow latency (batched)</div>
+        <div class="kpi-value" id="kpi-lat">–</div>
+        <div class="kpi-foot" id="kpi-lat-foot"></div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card glass">
+        <div class="card-head"><h3>Model performance comparison</h3><span class="muted small">test fold · higher is better</span></div>
+        <div class="chart-box"><canvas id="chart-models" aria-label="Model comparison dot plot"></canvas></div>
+      </div>
+      <div class="card glass">
+        <div class="card-head"><h3>Confusion matrix — champion</h3><span class="muted small">hover a cell for its operational cost</span></div>
+        <div class="cm" id="cm"></div>
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="card glass">
+        <div class="card-head"><h3>Top-15 feature importance (Gini)</h3><span class="muted small">what drives an alert</span></div>
+        <div class="chart-box tall"><canvas id="chart-features" aria-label="Feature importance"></canvas></div>
+      </div>
+      <div class="card glass">
+        <div class="card-head"><h3>Detection rate by attack family</h3><span class="muted small">line = 95 % target</span></div>
+        <div class="chart-box tall"><canvas id="chart-families" aria-label="Per-family recall"></canvas></div>
+      </div>
+    </div>
+    <div class="card glass">
+      <div class="card-head"><h3>Metric table</h3><span class="muted small">table view of the charts above</span></div>
+      <div class="table-wrap"><table id="metric-table"></table></div>
+    </div>
+  </section>
+
+  <!-- ===================== 2. LIVE STREAM ===================== -->
+  <section id="view-stream" class="view">
+    <div class="card glass">
+      <div class="toolbar">
+        <button class="btn btn-primary" id="stream-toggle">▶ Start live feed</button>
+        <label class="small muted">Feed rate
+          <select id="stream-speed" style="width:auto; margin-left:6px">
+            <option value="2">2 flows / s</option>
+            <option value="5" selected>5 flows / s</option>
+            <option value="12">12 flows / s</option>
+          </select>
+        </label>
+        <button class="btn" id="stream-clear">Clear</button>
+        <span class="muted small" style="margin-left:auto">Flows are replayed from the untouched test fold and scored one-by-one by the live pipeline.</span>
+      </div>
+      <div class="counter-grid">
+        <div class="counter glass"><div class="l">Flows processed</div><div class="v" id="c-total">0</div></div>
+        <div class="counter glass"><div class="l"><span class="led" style="background:var(--threat)"></span>Alerts raised</div><div class="v" id="c-alerts">0</div></div>
+        <div class="counter glass"><div class="l"><span class="led" style="background:var(--safe)"></span>Allowed (benign)</div><div class="v" id="c-allowed">0</div></div>
+        <div class="counter glass"><div class="l"><span class="led" style="background:var(--amber)"></span>Missed attacks (FN)</div><div class="v" id="c-missed">0</div></div>
+        <div class="counter glass"><div class="l"><span class="led" style="background:#a78bfa"></span>Mean latency</div><div class="v" id="c-lat">–</div></div>
+      </div>
+      <div class="chart-box short"><canvas id="chart-stream" aria-label="Attack probability per flow"></canvas></div>
+    </div>
+    <div class="card glass" style="margin-top:16px">
+      <div class="card-head"><h3>SIEM incident log</h3><span class="muted small">newest first · last 150 events</span></div>
+      <div class="table-wrap siem-scroll">
+        <table class="siem-table">
+          <thead><tr><th>Timestamp</th><th>Flow</th><th>Proto / Service / State</th><th>Verdict</th><th>Attack category</th><th class="num">Confidence</th><th>Ground truth</th><th>Action</th><th class="num">Latency</th></tr></thead>
+          <tbody id="siem-body"><tr><td colspan="9" class="muted">Press “Start live feed” to begin streaming.</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 3. INSPECTOR ===================== -->
+  <section id="view-inspector" class="view">
+    <div class="grid-2">
+      <div class="card glass">
+        <div class="card-head"><h3>Quick inject sample flow</h3><span class="muted small">real flows sampled from the test fold</span></div>
+        <div class="presets" id="presets"></div>
+        <div class="card-head"><h3>Flow attributes</h3><button class="btn" id="insp-reset" style="padding:6px 12px">Reset</button></div>
+        <form id="insp-form" class="form-grid" autocomplete="off">
+          <label class="field">Protocol (proto)<select name="proto" id="f-proto"></select></label>
+          <label class="field">Service<select name="service" id="f-service"></select></label>
+          <label class="field">State<select name="state" id="f-state"></select></label>
+          <label class="field">Duration (dur, s)<input type="number" step="any" min="0" name="dur" id="f-dur"></label>
+          <label class="field">Source bytes (sbytes)<input type="number" step="any" min="0" name="sbytes" id="f-sbytes"></label>
+          <label class="field">Dest bytes (dbytes)<input type="number" step="any" min="0" name="dbytes" id="f-dbytes"></label>
+          <label class="field">Source TTL (sttl)<input type="number" step="any" min="0" name="sttl" id="f-sttl"></label>
+          <label class="field">Source load (sload, bit/s)<input type="number" step="any" min="0" name="sload" id="f-sload"></label>
+          <label class="field">Dest load (dload, bit/s)<input type="number" step="any" min="0" name="dload" id="f-dload"></label>
+        </form>
+        <div class="toolbar" style="margin-top:16px">
+          <button class="btn btn-primary" id="insp-run">⌖ Analyse flow</button>
+          <span class="muted small" id="insp-note">Unspecified features are filled with training-fold medians.</span>
+        </div>
+      </div>
+      <div class="card glass">
+        <div class="card-head"><h3>Detection result</h3><span class="muted small" id="insp-lat"></span></div>
+        <div class="gauge-wrap">
+          <svg viewBox="0 0 220 125" aria-label="Attack probability gauge">
+            <path d="M 20 110 A 90 90 0 0 1 200 110" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="16" stroke-linecap="round"/>
+            <path id="gauge-arc" d="M 20 110 A 90 90 0 0 1 200 110" fill="none" stroke="#48CAE4" stroke-width="16" stroke-linecap="round" stroke-dasharray="0 999"/>
+            <line id="gauge-tau" x1="110" y1="12" x2="110" y2="34" stroke="#F59E0B" stroke-width="2.5"/>
+          </svg>
+          <div class="gauge-val"><div class="big" id="gauge-num">–</div><div class="muted small">P(attack)</div></div>
+        </div>
+        <div class="verdict idle" id="verdict">AWAITING FLOW</div>
+        <div style="margin-top:14px">
+          <div class="prob-row"><span>Normal</span><div class="prob-track"><div class="prob-fill" id="pb-normal" style="background:var(--safe)"></div></div><span class="mono" id="pv-normal">–</span></div>
+          <div class="prob-row"><span>Attack</span><div class="prob-track"><div class="prob-fill" id="pb-attack" style="background:var(--threat)"></div></div><span class="mono" id="pv-attack">–</span></div>
+        </div>
+        <div id="fam-box" class="hidden" style="margin-top:14px">
+          <div class="muted small" style="margin-bottom:4px">Stage-2 attack-family attribution</div>
+          <div id="fam-rows"></div>
+        </div>
+        <dl class="kv" id="insp-kv"></dl>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 4. BATCH ===================== -->
+  <section id="view-batch" class="view">
+    <div class="card glass">
+      <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Upload CSV">
+        <div class="big-ico">⇪</div>
+        <div style="font-size:15px; font-weight:600; margin:6px 0 4px">Drag &amp; drop a network-flow CSV here</div>
+        <div class="muted small">or click to browse · UNSW-NB15 column schema · optional <span class="mono">label</span> / <span class="mono">attack_cat</span> columns enable live scoring</div>
+        <input type="file" id="file-input" accept=".csv,text/csv" class="hidden">
+      </div>
+      <div class="toolbar" style="margin-top:14px">
+        <button class="btn" id="sample-btn">Load sample CSV (2,000 test-fold flows)</button>
+        <span class="muted small" id="batch-status"></span>
+      </div>
+      <div class="progress"><div class="progress-fill" id="batch-progress"></div></div>
+    </div>
+
+    <div id="batch-results" class="hidden" style="margin-top:16px">
+      <div class="tile-grid">
+        <div class="kpi glass" style="--accent: var(--cyan)"><div class="kpi-label">Flows scored</div><div class="kpi-value" id="b-rows">–</div><div class="kpi-foot muted" id="b-speed"></div></div>
+        <div class="kpi glass" style="--accent: var(--threat)"><div class="kpi-label">Flagged malicious</div><div class="kpi-value" id="b-attacks">–</div><div class="kpi-foot muted" id="b-attack-rate"></div></div>
+        <div class="kpi glass" style="--accent: var(--safe)"><div class="kpi-label">Benign</div><div class="kpi-value" id="b-normal">–</div><div class="kpi-foot muted">allowed</div></div>
+        <div class="kpi glass" style="--accent: var(--amber)"><div class="kpi-label">Accuracy vs. labels</div><div class="kpi-value" id="b-acc">–</div><div class="kpi-foot muted" id="b-acc-foot">requires a label column</div></div>
+      </div>
+      <div class="grid-3">
+        <div class="card glass">
+          <div class="card-head"><h3>Attack breakdown</h3><span class="muted small">predicted class</span></div>
+          <div class="chart-box"><canvas id="chart-batch" aria-label="Predicted class breakdown"></canvas></div>
+        </div>
+        <div class="card glass" style="grid-column: span 2">
+          <div class="card-head">
+            <h3>Enriched predictions (first 200 rows)</h3>
+            <a class="btn btn-primary" id="b-download" href="#" download>⬇ Download enriched predictions CSV</a>
+          </div>
+          <div class="table-wrap siem-scroll"><table id="b-preview"></table></div>
+          <div class="note" id="b-note"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+<div class="toast" id="toast"></div>
+</body>
+</html>

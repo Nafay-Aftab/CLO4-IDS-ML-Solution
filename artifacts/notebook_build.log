@@ -1,0 +1,12 @@
+﻿.\.venv\Scripts\python.exe : D:\Information Security Assignment 1\.venv\lib\site-packages\zmq\_future.py:718: 
+RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an 
+additional selector thread for add_reader support via tornado. Use 
+`asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+At line:1 char:302
++ ... tch {} } }; .\.venv\Scripts\python.exe -m src.build_notebook 2>&1 | O ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (D:\Information ...d this warning.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  self._get_loop()
+executed 18 code cells in 76.6s -> D:\Information Security Assignment 1\notebooks\CLO4_IDS_ML_Solution.ipynb

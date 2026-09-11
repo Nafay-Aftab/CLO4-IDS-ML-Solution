@@ -1,9 +1,12 @@
-﻿"""Model-improvement experiment on a VALIDATION slice of the training fold only (test fold untouched)."""
+"""Model-improvement experiment on a VALIDATION slice of the training fold only (test fold untouched).
+
+Question: can an alternative tree ensemble (ExtraTrees) or engineered ratio features lift attack recall
+above the tuned Random Forest while holding the false-positive rate under 5 %?
+"""
 import sys
 import time
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))  # run from repo root: python experiments/<script>.py
-import lightgbm as lgb
 import numpy as np
 import pandas as pd
 from sklearn.ensemble import ExtraTreesClassifier, RandomForestClassifier
@@ -43,47 +46,27 @@ def best_recall_under_fpr(y, p, cap=0.05, window=None):
 
 fit_i, val_i = train_test_split(np.arange(len(y_tr)), test_size=0.2, stratify=c_tr, random_state=SEED)
 yv = y_tr.to_numpy()[val_i]
-results, probas = [], {}
+results = []
 for fe in (False, True):
     Xa = engineer(X_tr) if fe else X_tr
     pre = build_preprocessor(Xa)
     Xf = pre.fit_transform(Xa.iloc[fit_i]); Xv = pre.transform(Xa.iloc[val_i]); yf = y_tr.to_numpy()[fit_i]
-    in_fit, in_es = train_test_split(np.arange(len(yf)), test_size=0.1, stratify=yf, random_state=SEED)
     models = {
         "RF tuned": RandomForestClassifier(n_estimators=150, min_samples_split=5, min_samples_leaf=2,
                                            max_features="sqrt", class_weight="balanced_subsample",
                                            random_state=SEED, n_jobs=-1),
         "ExtraTrees": ExtraTreesClassifier(n_estimators=300, min_samples_leaf=1, max_features="sqrt",
                                            class_weight="balanced_subsample", random_state=SEED, n_jobs=-1),
-        "LGBM base": lgb.LGBMClassifier(n_estimators=3000, learning_rate=0.05, num_leaves=63, subsample=0.8,
-                                        subsample_freq=1, colsample_bytree=0.8, class_weight="balanced",
-                                        random_state=SEED, n_jobs=-1, verbose=-1),
-        "LGBM big": lgb.LGBMClassifier(n_estimators=5000, learning_rate=0.03, num_leaves=255, min_child_samples=10,
-                                       subsample=0.8, subsample_freq=1, colsample_bytree=0.6, reg_lambda=1.0,
-                                       class_weight="balanced", random_state=SEED, n_jobs=-1, verbose=-1),
     }
     for name, m in models.items():
         t0 = time.perf_counter()
-        if name.startswith("LGBM"):
-            m.fit(Xf[in_fit], yf[in_fit], eval_set=[(Xf[in_es], yf[in_es])],
-                  callbacks=[lgb.early_stopping(150, verbose=False)])
-        else:
-            m.fit(Xf, yf)
+        m.fit(Xf, yf)
         p = m.predict_proba(Xv)[:, 1]
         tag = f"{name}{' +FE' if fe else ''}"
-        probas[tag] = p
         b = best_recall_under_fpr(yv, p); bw = best_recall_under_fpr(yv, p, window=(0.30, 0.701))
         results.append({"model": tag, "auc": roc_auc_score(yv, p), "tau": b[0], "recall": b[1], "fpr": b[2],
                         "acc": b[3], "f1": b[4], "tau_win": bw and bw[0], "recall_win": bw and bw[1],
                         "secs": time.perf_counter() - t0})
-        print(results[-1], flush=True)
-    for a, c in [("RF tuned", "LGBM big"), ("ExtraTrees", "LGBM big"), ("RF tuned", "LGBM base")]:
-        tag = f"blend {a}+{c}{' +FE' if fe else ''}"
-        sfx = " +FE" if fe else ""
-        p = (probas[a + sfx] + probas[c + sfx]) / 2
-        b = best_recall_under_fpr(yv, p); bw = best_recall_under_fpr(yv, p, window=(0.30, 0.701))
-        results.append({"model": tag, "auc": roc_auc_score(yv, p), "tau": b[0], "recall": b[1], "fpr": b[2],
-                        "acc": b[3], "f1": b[4], "tau_win": bw and bw[0], "recall_win": bw and bw[1], "secs": 0})
         print(results[-1], flush=True)
 
 pd.set_option("display.width", 200)

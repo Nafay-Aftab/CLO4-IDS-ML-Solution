@@ -5,7 +5,7 @@ import sys
 from src.config import TEST_CSV, TRAIN_CSV
 
 MODULES = ["pandas", "numpy", "sklearn", "scipy", "matplotlib", "seaborn", "docx",
-           "joblib", "lightgbm", "fastapi", "uvicorn", "multipart", "nbformat", "nbclient"]
+           "joblib", "fastapi", "uvicorn", "multipart", "nbformat", "nbclient"]
 
 
 def main() -> int:

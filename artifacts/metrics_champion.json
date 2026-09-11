@@ -3,7 +3,7 @@
     "method": "GridSearchCV 3-fold, scoring=F1",
     "subsample_rows": 61841,
     "configs": 24,
-    "seconds": 134.0,
+    "seconds": 188.0,
     "best_params": {
       "max_depth": null,
       "min_samples_leaf": 2,
@@ -39,7 +39,7 @@
     "roc_auc": 0.991535,
     "model": "RandomForest (tuned)",
     "threshold": 0.5,
-    "train_seconds": 15.77,
+    "train_seconds": 32.55,
     "oob_accuracy": 0.948835
   },
   "random_forest_default": {
@@ -55,24 +55,6 @@
     "tp": 31155,
     "roc_auc": 0.991535,
     "threshold": 0.5
-  },
-  "lightgbm": {
-    "accuracy": 0.950597,
-    "precision": 0.970899,
-    "recall": 0.951207,
-    "f1": 0.960952,
-    "fpr": 0.050484,
-    "fnr": 0.048793,
-    "tn": 17661,
-    "fp": 939,
-    "fn": 1607,
-    "tp": 31328,
-    "roc_auc": 0.992476,
-    "model": "LightGBM (early-stopped)",
-    "threshold": 0.43,
-    "rule": "max-recall s.t. FPR<5%",
-    "best_iteration": 1023,
-    "train_seconds": 7.49
   },
   "decision_tree": {
     "accuracy": 0.929174,

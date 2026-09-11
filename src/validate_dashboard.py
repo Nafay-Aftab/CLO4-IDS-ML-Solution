@@ -65,7 +65,7 @@ def main() -> int:
 
     t = get("/api/telemetry")
     k = t["kpis"]
-    assert k["total_flows"] == 51_535 and len(t["models"]) == 3 and len(t["families"]) == 9
+    assert k["total_flows"] == 51_535 and len(t["models"]) == 2 and len(t["families"]) == 9
     assert len(t["features"]) == 15 and sum(t["confusion"].values()) == 51_535
     log["GET /api/telemetry"] = {"recall": round(k["recall"], 4), "fpr": round(k["fpr"], 4),
                                  "accuracy": round(k["accuracy"], 4), "latency_us": round(k["latency_us"], 2)}

@@ -1,14 +1,13 @@
-"""Phase 4: tuned RandomForest champion, LightGBM challenger, tau* calibration (objective.md Section 5).
+"""Phase 4: tuned RandomForest champion with tau* calibration (objective.md Section 5).
 
-tau* is calibrated on leak-free *validation* probabilities only — out-of-bag scores for the RF
-(each training row scored exclusively by trees that never saw it) and a held-out 15 % training
-slice for LightGBM. The 20 % test fold is touched exactly once, after tau* is frozen.
+tau* is calibrated on leak-free *validation* probabilities only — the forest's out-of-bag scores
+(each training row scored exclusively by trees that never saw it). The 20 % test fold is touched
+exactly once, after tau* is frozen.
 """
 import json
 import time
 
 import joblib
-import lightgbm as lgb
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
@@ -119,21 +118,6 @@ def fig_importance(imp: pd.Series) -> str:
     return save(fig, "feature_importance.png")
 
 
-def lightgbm_challenger(d):
-    fit_idx, val_idx = train_test_split(np.arange(len(d["y_tr"])), test_size=0.15, stratify=d["cat_tr"],
-                                        random_state=SEED)
-    X, y = d["Xp_tr"], d["y_tr"].to_numpy()
-    clf = lgb.LGBMClassifier(n_estimators=2000, learning_rate=0.05, num_leaves=63, subsample=0.8,
-                             subsample_freq=1, colsample_bytree=0.8, class_weight="balanced",
-                             random_state=SEED, n_jobs=-1, verbose=-1)
-    t0 = time.perf_counter()
-    clf.fit(X[fit_idx], y[fit_idx], eval_set=[(X[val_idx], y[val_idx])],
-            callbacks=[lgb.early_stopping(100, verbose=False)])
-    secs = time.perf_counter() - t0
-    tau, rule = select_tau(sweep(y[val_idx], clf.predict_proba(X[val_idx])[:, 1]))
-    return clf, tau, rule, secs
-
-
 def main():
     d = prepare_data()
     Xp_tr, Xp_te, y_tr, y_te = d["Xp_tr"], d["Xp_te"], d["y_tr"], d["y_te"]
@@ -163,10 +147,6 @@ def main():
     m_rf_default = binary_metrics(y_te, (p_rf >= 0.5).astype(int), p_rf)
     m_rf = binary_metrics(y_te, (p_rf >= tau).astype(int), p_rf)
 
-    lgbm, tau_l, rule_l, lgbm_s = lightgbm_challenger(d)
-    p_l = lgbm.predict_proba(Xp_te)[:, 1]
-    m_l = binary_metrics(y_te, (p_l >= tau_l).astype(int), p_l)
-
     base = json.loads((ARTIFACT_DIR / "metrics_baseline.json").read_text())
     imp = pd.Series(rf.feature_importances_, index=d["feature_names"]).sort_values(ascending=False)
     pd.DataFrame({"feature": imp.index, "feature_pretty": [pretty(n) for n in imp.index],
@@ -182,34 +162,28 @@ def main():
         "random_forest_tau_star": {**m_rf, "model": "RandomForest (tuned)", "threshold": tau,
                                    "train_seconds": round(fit_s, 2), "oob_accuracy": round(rf.oob_score_, 6)},
         "random_forest_default": {**m_rf_default, "threshold": 0.5},
-        "lightgbm": {**m_l, "model": "LightGBM (early-stopped)", "threshold": tau_l, "rule": rule_l,
-                     "best_iteration": int(lgbm.best_iteration_), "train_seconds": round(lgbm_s, 2)},
         "decision_tree": base,
         "top15_features": imp.head(15).round(6).to_dict(),
     }
     (ARTIFACT_DIR / "metrics_champion.json").write_text(json.dumps(summary, indent=2, default=str))
     pd.DataFrame({"y_true": y_te, "attack_cat": d["cat_te"], "rf_proba": p_rf.round(6),
-                  "rf_pred": (p_rf >= tau).astype(int), "lgbm_proba": p_l.round(6),
-                  "lgbm_pred": (p_l >= tau_l).astype(int)}).to_csv(ARTIFACT_DIR / "test_predictions.csv",
-                                                                    index_label="test_row")
+                  "rf_pred": (p_rf >= tau).astype(int)}).to_csv(ARTIFACT_DIR / "test_predictions.csv",
+                                                                 index_label="test_row")
     # One bundle = everything inference needs (used by realtime.py and the dashboard).
     joblib.dump({"name": "Tuned Random Forest", "pre": d["pre"], "model": rf, "tau": tau, "best_params": best},
                 MODEL_DIR / "champion_bundle.joblib", compress=3)
-    joblib.dump(lgbm, MODEL_DIR / "challenger_lgbm.joblib")
     joblib.dump(d["pre"], MODEL_DIR / "preprocessor.joblib")
 
     cols = ("accuracy", "precision", "recall", "f1", "fpr", "roc_auc")
     comparison = [
         {"name": "Decision Tree (baseline)", "threshold": 0.5, "champion": False, **{k: base[k] for k in cols}},
         {"name": "Tuned Random Forest", "threshold": tau, "champion": True, **{k: m_rf[k] for k in cols}},
-        {"name": "LightGBM (challenger)", "threshold": tau_l, "champion": False, **{k: m_l[k] for k in cols}},
     ]
     (ARTIFACT_DIR / "model_comparison.json").write_text(json.dumps(comparison, indent=2))
 
     print(f"DecisionTree    @0.50 | {fmt(base)}")
     print(f"RandomForest    @0.50 | {fmt(m_rf_default)}")
     print(f"RandomForest    @{tau:.2f} | {fmt(m_rf)} | auc={m_rf['roc_auc']:.4f}")
-    print(f"LightGBM        @{tau_l:.2f} | {fmt(m_l)} | auc={m_l['roc_auc']:.4f}")
     for p in paths:
         print("saved", p)
 

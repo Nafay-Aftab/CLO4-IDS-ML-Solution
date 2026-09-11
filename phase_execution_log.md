@@ -514,7 +514,7 @@ Assemble all previous phases into a single, beautifully documented, self-contain
 ## Phase 9: Academic MS Word Report Generation (`Project_Report_CLO4.docx`)
 
 ### Status
-NOT_STARTED
+COMPLETED — awaiting CP-3 page-count confirmation by the student in MS Word
 
 ### Git Branch
 `feature/phase-9-report`
@@ -565,7 +565,13 @@ Author an extremely professional, academic 5–6 page MS Word deliverable matchi
 - Inspect generated docx page count and formatting.
 
 ### Completion Evidence
-*(To be recorded by implementation agent)*
+- **Completed:** 2026-09-11 · Phase 8 merge on `main`: `08428d2` (pushed).
+- **Generator:** `python -m src.generate_report` (python-docx) → `reports/Project_Report_CLO4.docx`. Every number is read from `artifacts/` at build time; nothing is typed by hand.
+- **Page budget (measured, not estimated):** exported through MS Word 2013 (`ExportAsFixedFormat`) and counted on the PDF: **7 pages = cover + 6 body pages** (the last body page is about one-third full) · **2,074 words**. The first draft was 8 PDF pages. It was brought within budget by cropping the dashboard screenshot to its KPI/chart band (6.5" → 2.9"), removing a per-family table that duplicated Figure 5, shrinking Figure 1, and tightening the introduction, the dataset paragraph and the 4.3/4.5 text. *Note:* Word's `ComputeStatistics(wdStatisticPages)` reported 11 on the first draft, while the rendered PDF had 8, so the PDF count is treated as authoritative. Final confirmation is CP-3 (student opens the file in Word).
+- **Formatting:** A4, 1" margins, Calibri 10.5 pt, 1.15 line spacing; headings Executive Navy `#1B365D` / Slate `#4A5568`, teal accent `#008080`; navy-header tables with alternating fills; "CISO Executive Takeaways" callout (light-blue fill, navy border); header with student name/enrolment, footer with page numbers; inline code rendered in Consolas.
+- **Content:** cover (student, enrolment, class, course, CLO 4, instructor, deliverable, GitHub URL) → 1 Executive Summary → 2 Introduction & Scenario → 3 Methodology (3.1 dataset, 3.2 leak-free preprocessing, 3.3 ML design + τ* calibration) → 4 Results (4.1 comparison table with honest gate assessment, 4.2 confusion matrix + threshold curve, 4.3 per-family analysis, 4.4 Gini attribution, 4.5 real-time performance, 4.6 SOC dashboard) → 5 Conclusion & roadmap → 6 IEEE references [1]–[7] → Appendix (GitHub + setup).
+- **Figures embedded (7):** `eda_attack_distribution`, `confusion_matrix`, `precision_recall_threshold`, `feature_importance`, `attack_recall_breakdown`, `latency_throughput`, `dashboard_telemetry` (top section). **Tables:** cover metadata, model comparison, callout.
+- **Placeholder scan:** no TODO/lorem/template braces/NaN. The only "None" tokens are the English word and the real hyperparameter `max_depth = None`.
 
 ---
 

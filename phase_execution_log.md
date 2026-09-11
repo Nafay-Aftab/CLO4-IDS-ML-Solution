@@ -408,7 +408,7 @@ Benchmark inference latency and throughput, and build a simulated real-time stre
 ## Phase 7: Bespoke Enterprise SOC Web Dashboard (FastAPI + HTML5/CSS3/Chart.js)
 
 ### Status
-COMPLETED — awaiting CP-2 visual approval from the student
+COMPLETED — CP-2 visual design approved by the student (2026-09-11)
 
 ### Git Branch
 `feature/phase-7-soc-dashboard`
@@ -573,7 +573,7 @@ NOT_STARTED
 `feature/phase-10-final-qa`
 
 ### Objective
-Finalize `README.md`, verify git repository cleanliness, commit deliverables, and perform final viva audit.
+Finalize `README.md`, verify git repository cleanliness, commit deliverables, and perform the final quality audit.
 
 ### Preconditions
 - Phases 0 through 9 completed and merged into `main`.
@@ -587,7 +587,6 @@ Finalize `README.md`, verify git repository cleanliness, commit deliverables, an
    - Dataset setup & quick-start execution guide (including how to run both the Notebook and the Web Dashboard).
    - Summary of key results ($\ge 95\%$ metrics table).
    - Sample SIEM alert screens and dashboard screenshots.
-   - Viva defense summary map.
 3. Verify repo cleanliness: ensure large raw PCAP dumps (`UNSW-NB15_1..4.csv`) are ignored by `.gitignore`.
 4. Check git status, stage, commit all files, merge into `main`, and push to `https://github.com/Nafay-Aftab/CLO4-IDS-ML-Solution`.
 5. Perform final verification against grading rubric and CLO 4 objectives.
@@ -598,7 +597,6 @@ Finalize `README.md`, verify git repository cleanliness, commit deliverables, an
 
 ### Acceptance Criteria
 - Repository passes all assignment requirements.
-- Viva defense map ready.
 - Clean working tree on `main` pushed to remote.
 
 ### Validation

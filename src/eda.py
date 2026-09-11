@@ -1,4 +1,4 @@
-"""Phase 1: ingestion integrity checks + 4 empirical EDA proofs (objective.md Section 9)."""
+"""Phase 1: ingestion integrity checks + 4 empirical EDA proofs (objective.md Section 8)."""
 from __future__ import annotations
 
 import json

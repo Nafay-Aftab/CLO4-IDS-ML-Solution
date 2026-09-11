@@ -470,7 +470,7 @@ Develop a high-performance, single-command enterprise SOC Web Dashboard using Fa
 ## Phase 8: Jupyter Notebook Assembly & Execution
 
 ### Status
-NOT_STARTED
+COMPLETED
 
 ### Git Branch
 `feature/phase-8-notebook`
@@ -502,7 +502,12 @@ Assemble all previous phases into a single, beautifully documented, self-contain
 - Validate execution using `jupyter nbconvert --to notebook --execute notebooks/CLO4_IDS_ML_Solution.ipynb`.
 
 ### Completion Evidence
-*(To be recorded by implementation agent)*
+- **Completed:** 2026-09-11 · Phase 7 merge on `main`: `46b4934`; follow-up merges `1a82d85` (two-model scope) and `bb4e3c8` (defense-map removal), all pushed.
+- **Build:** `python -m src.build_notebook` assembles and executes the notebook headlessly via `nbclient` (equivalent to `nbconvert --execute`), writing `notebooks/CLO4_IDS_ML_Solution.ipynb`. The build fails if any cell raises an error. Log: `artifacts/notebook_build.log`.
+- **Result:** 42 cells (18 code, 24 markdown) · **0 errors** · 9 embedded figures · **end-to-end execution 73.1 s** (< 3 min target ✔).
+- **Structure:** all 13 sections from objective.md §7.A: executive summary & student metadata → imports/seed → ingestion & sanitisation → EDA (4 proofs + insight→decision notes) → leak-free split & pipeline → Decision-Tree baseline → tuned Random Forest champion → τ* calibration on OOB probabilities → comparative evaluation & confusion matrix → 9-family recall & security critique → Gini explainability → real-time benchmark & streaming SIEM → CISO recommendations.
+- **Self-contained & honest:** every table and figure is recomputed by the notebook's own cells. Narrative numbers are pulled from `artifacts/` at build time. The acceptance gates are printed as measured (F1 ✔; accuracy, recall, FPR ✘). The 138 s grid search is loaded from `artifacts/rf_cv_results.csv` (produced by `src.champion`), and the winning configuration is refitted in-notebook to stay under 3 minutes.
+- **Reproducibility check:** the in-notebook run reproduces the champion exactly (OOB accuracy 0.9488, τ* = 0.50, baseline and champion metrics identical to Phase 3/4). Live latency re-measurement this run: 7.85 µs/flow (127,425 flows/s), which is within normal wall-clock variance of the dedicated benchmark (6.35 µs/flow). The notebook states this explicitly. The notebook's re-rendered `latency_throughput.png` is not committed, so the repository figure stays tied to `artifacts/realtime_report.json`.
 
 ---
 

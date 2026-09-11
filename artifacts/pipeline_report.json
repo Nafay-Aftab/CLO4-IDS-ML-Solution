@@ -1,0 +1,48 @@
+{
+  "train_rows": 206138,
+  "test_rows": 51535,
+  "processed_features": 195,
+  "onehot_columns": 156,
+  "nan_train": 0,
+  "nan_test": 0,
+  "train_attack_rate": 0.6391,
+  "test_attack_rate": 0.6391,
+  "train_cat_counts": {
+    "Normal": 74400,
+    "Generic": 47097,
+    "Exploits": 35620,
+    "Fuzzers": 19397,
+    "DoS": 13082,
+    "Reconnaissance": 11189,
+    "Analysis": 2142,
+    "Backdoor": 1863,
+    "Shellcode": 1209,
+    "Worms": 139
+  },
+  "test_cat_counts": {
+    "Normal": 18600,
+    "Generic": 11774,
+    "Exploits": 8905,
+    "Fuzzers": 4849,
+    "DoS": 3271,
+    "Reconnaissance": 2798,
+    "Analysis": 535,
+    "Backdoor": 466,
+    "Shellcode": 302,
+    "Worms": 35
+  },
+  "unseen_test_categories": {
+    "proto": [],
+    "service": [],
+    "state": [
+      "PAR"
+    ]
+  },
+  "synthetic_unseen_proto_handled": true,
+  "train_only_stats_differ_from_pooled": true,
+  "categorical": [
+    "proto",
+    "service",
+    "state"
+  ]
+}

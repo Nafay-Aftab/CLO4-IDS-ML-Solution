@@ -122,7 +122,7 @@ Ingest both UNSW-NB15 CSV files, sanitize headers (UTF-8 BOM), separate features
 ## Phase 2: Leak-Free Preprocessing & Pipeline Construction
 
 ### Status
-NOT_STARTED
+COMPLETED
 
 ### Git Branch
 `feature/phase-2-pipeline`
@@ -161,7 +161,13 @@ Build an isolated, leak-free feature engineering pipeline with stratified partit
 - Execute pipeline validation script asserting dimensions and absence of NaNs.
 
 ### Completion Evidence
-*(To be recorded by implementation agent)*
+- **Completed:** 2026-09-11 · Phase 1 merge on `main`: `c3fc6ac` (pushed).
+- **Script:** `python -m src.validate_pipeline` → `artifacts/pipeline_report.json` — **PASSED**.
+- **Split:** `StratifiedShuffleSplit(test_size=0.2, random_state=42)` stratified on 10-class `attack_cat` → **206,138 train / 51,535 test**; attack rate identical in both folds (63.91%); Worms 139 train / 35 test.
+- **Processed dimensionality:** **195 features** (156 one-hot + 9 log1p→RobustScaler + 30 RobustScaler); `NaN` = 0 and `inf` = 0 in both folds.
+- **Unseen-category handling:** real unseen test value discovered — `state='PAR'` (absent from train) → encoded as all-zero vector, no error. A synthetic probe `proto='zz-unseen-proto'` also transformed without error.
+- **Leakage proof:** RobustScaler `center_/scale_` fitted on train-only differ from pooled train+test statistics → the test fold never influenced the fitted pipeline.
+- **Serialized:** `models/preprocessor.joblib` (regenerable; git-ignored).
 
 ---
 

@@ -1,0 +1,92 @@
+[2026-09-11 13:21:04.524] [ALERT] [HIGH] Malicious Flow #43134 Detected!  (wb-mon/-/INT)
+  ├─ Attack Category : DoS   (stage-2 guess: match; ground truth: DoS)
+  ├─ Detection       : TP
+  ├─ Confidence Score: 100.00%   (τ* = 0.50)
+  ├─ Latency         : 9,997.50 microseconds
+  └─ Action Taken    : TCP RST Packet Dispatched | Flow Blocked
+[2026-09-11 13:21:04.596] [ALERT] [HIGH] Malicious Flow #10923 Detected!  (narp/-/INT)
+  ├─ Attack Category : Analysis   (stage-2 guess: MISMATCH; ground truth: Backdoor)
+  ├─ Detection       : TP
+  ├─ Confidence Score: 100.00%   (τ* = 0.50)
+  ├─ Latency         : 9,548.60 microseconds
+  └─ Action Taken    : TCP RST Packet Dispatched | Flow Blocked
+[2026-09-11 13:21:04.659] [ALERT] [CRITICAL] Malicious Flow #50231 Detected!  (tcp/http/FIN)
+  ├─ Attack Category : Exploits   (stage-2 guess: match; ground truth: Exploits)
+  ├─ Detection       : TP
+  ├─ Confidence Score: 99.99%   (τ* = 0.50)
+  ├─ Latency         : 9,823.80 microseconds
+  └─ Action Taken    : TCP RST Packet Dispatched | Flow Blocked
+[2026-09-11 13:21:04.721] [ALERT] [CRITICAL] Malicious Flow #6048 Detected!  (sctp/-/INT)
+  ├─ Attack Category : Backdoor   (stage-2 guess: MISMATCH; ground truth: DoS)
+  ├─ Detection       : TP
+  ├─ Confidence Score: 94.81%   (τ* = 0.50)
+  ├─ Latency         : 9,303.40 microseconds
+  └─ Action Taken    : TCP RST Packet Dispatched | Flow Blocked
+[2026-09-11 13:21:04.783] [INFO ] [ALLOW] Flow #39837 classified benign  (tcp/http/FIN)
+  └─ P(attack) 0.00% · latency 10,051.00 µs · ground truth: Normal → TN
+[2026-09-11 13:21:04.847] [INFO ] [ALLOW] Flow #22785 classified benign  (udp/-/CON)
+  └─ P(attack) 0.14% · latency 12,281.80 µs · ground truth: Normal → TN
+[2026-09-11 13:21:04.907] [ALERT] [HIGH] Malicious Flow #39169 Detected!  (mux/-/INT)
+  ├─ Attack Category : DoS   (stage-2 guess: MISMATCH; ground truth: Exploits)
+  ├─ Detection       : TP
+  ├─ Confidence Score: 99.01%   (τ* = 0.50)
+  ├─ Latency         : 9,429.60 microseconds
+  └─ Action Taken    : TCP RST Packet Dispatched | Flow Blocked
+[2026-09-11 13:21:04.969] [ALERT] [MEDIUM] Malicious Flow #9225 Detected!  (udp/-/INT)
+  ├─ Attack Category : Fuzzers   (stage-2 guess: match; ground truth: Fuzzers)
+  ├─ Detection       : TP
+  ├─ Confidence Score: 76.74%   (τ* = 0.50)
+  ├─ Latency         : 9,927.70 microseconds
+  └─ Action Taken    : Source Rate-Limited | SOC Ticket Opened
+[2026-09-11 13:21:05.032] [ALERT] [HIGH] Malicious Flow #37796 Detected!  (any/-/INT)
+  ├─ Attack Category : DoS   (stage-2 guess: MISMATCH; ground truth: Exploits)
+  ├─ Detection       : TP
+  ├─ Confidence Score: 100.00%   (τ* = 0.50)
+  ├─ Latency         : 9,817.80 microseconds
+  └─ Action Taken    : TCP RST Packet Dispatched | Flow Blocked
+[2026-09-11 13:21:05.093] [ALERT] [CRITICAL] Malicious Flow #26024 Detected!  (tcp/-/FIN)
+  ├─ Attack Category : Exploits   (stage-2 guess: MISMATCH; ground truth: DoS)
+  ├─ Detection       : TP
+  ├─ Confidence Score: 92.49%   (τ* = 0.50)
+  ├─ Latency         : 9,960.60 microseconds
+  └─ Action Taken    : TCP RST Packet Dispatched | Flow Blocked
+[2026-09-11 13:21:05.157] [ALERT] [CRITICAL] Malicious Flow #45088 Detected!  (tcp/http/FIN)
+  ├─ Attack Category : Worms   (stage-2 guess: match; ground truth: Worms)
+  ├─ Detection       : TP
+  ├─ Confidence Score: 97.75%   (τ* = 0.50)
+  ├─ Latency         : 10,833.40 microseconds
+  └─ Action Taken    : TCP RST Packet Dispatched | Flow Blocked
+[2026-09-11 13:21:05.222] [INFO ] [ALLOW] Flow #4730 classified benign  (tcp/-/FIN)
+  └─ P(attack) 0.00% · latency 11,775.60 µs · ground truth: Normal → TN
+[2026-09-11 13:21:05.301] [ALERT] [HIGH] Malicious Flow #22538 Detected!  (udp/dns/INT)
+  ├─ Attack Category : Generic   (stage-2 guess: match; ground truth: Generic)
+  ├─ Detection       : TP
+  ├─ Confidence Score: 100.00%   (τ* = 0.50)
+  ├─ Latency         : 12,632.00 microseconds
+  └─ Action Taken    : TCP RST Packet Dispatched | Flow Blocked
+[2026-09-11 13:21:05.402] [ALERT] [MEDIUM] Malicious Flow #19203 Detected!  (udp/-/INT)
+  ├─ Attack Category : Fuzzers   (stage-2 guess: match; ground truth: Fuzzers)
+  ├─ Detection       : TP
+  ├─ Confidence Score: 57.15%   (τ* = 0.50)
+  ├─ Latency         : 36,403.50 microseconds
+  └─ Action Taken    : Source Rate-Limited | SOC Ticket Opened
+[2026-09-11 13:21:05.475] [INFO ] [ALLOW] Flow #33836 classified benign  (udp/-/CON)
+  └─ P(attack) 0.00% · latency 14,906.70 µs · ground truth: Normal → TN
+[2026-09-11 13:21:05.550] [INFO ] [ALLOW] Flow #47826 classified benign  (udp/-/INT)
+  └─ P(attack) 45.77% · latency 11,292.00 µs · ground truth: Fuzzers → FN — MISSED ATTACK
+[2026-09-11 13:21:05.611] [ALERT] [HIGH] Malicious Flow #23510 Detected!  (idrp/-/INT)
+  ├─ Attack Category : DoS   (stage-2 guess: MISMATCH; ground truth: Reconnaissance)
+  ├─ Detection       : TP
+  ├─ Confidence Score: 100.00%   (τ* = 0.50)
+  ├─ Latency         : 10,451.80 microseconds
+  └─ Action Taken    : TCP RST Packet Dispatched | Flow Blocked
+[2026-09-11 13:21:05.716] [ALERT] [CRITICAL] Malicious Flow #23944 Detected!  (tcp/http/FIN)
+  ├─ Attack Category : Worms   (stage-2 guess: match; ground truth: Worms)
+  ├─ Detection       : TP
+  ├─ Confidence Score: 98.80%   (τ* = 0.50)
+  ├─ Latency         : 49,988.00 microseconds
+  └─ Action Taken    : TCP RST Packet Dispatched | Flow Blocked
+[2026-09-11 13:21:05.784] [INFO ] [ALLOW] Flow #44178 classified benign  (tcp/-/FIN)
+  └─ P(attack) 27.46% · latency 11,498.70 µs · ground truth: Normal → TN
+[2026-09-11 13:21:05.871] [INFO ] [ALLOW] Flow #22472 classified benign  (tcp/-/FIN)
+  └─ P(attack) 20.88% · latency 21,957.90 µs · ground truth: Normal → TN

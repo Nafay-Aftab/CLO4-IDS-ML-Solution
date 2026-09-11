@@ -349,7 +349,7 @@ Conduct rigorous security evaluation: confusion matrix analysis, operational cos
 ## Phase 6: Real-Time Threat Detection & Streaming SIEM Simulation
 
 ### Status
-NOT_STARTED
+COMPLETED
 
 ### Git Branch
 `feature/phase-6-realtime-siem`
@@ -384,7 +384,25 @@ Benchmark inference latency and throughput, and build a simulated real-time stre
 - Execute latency benchmark test script.
 
 ### Completion Evidence
-*(To be recorded by implementation agent)*
+- **Completed:** 2026-09-11 · Phase 5 merge on `main`: `19fcb01` (pushed).
+- **Script:** `python -m src.realtime` → `artifacts/realtime_report.json`, `latency_benchmark.csv`, `siem_alert_log.txt`, run log `artifacts/realtime_run.log`. Final measurement taken on an otherwise idle machine (Intel i7-11800H, 16 logical cores); all timings are wall-clock and end-to-end (preprocessing + `predict_proba`).
+- **Throughput / latency by micro-batch size (1 CPU core, 10,000 test flows):**
+
+  | Batch size | µs / flow (mean) | p95 µs / flow | Flows / s |
+  |---:|---:|---:|---:|
+  | 1 | 6,830 | 7,380 | 146 |
+  | 10 | 734 | 783 | 1,362 |
+  | 100 | 105.3 | 110.4 | 9,494 |
+  | 1,000 | **31.0** | 31.8 | **32,212** |
+  | 10,000 | 18.4 | — | 54,244 |
+
+- **All cores, single 10,000-flow batch (median of 5):** **6.35 µs/flow → 157,418 flows/s.**
+- **Acceptance gates:** batched latency < 100 µs ✔ (6.35) · throughput > 10,000 flows/s ✔ (157,418) · single-core micro-batch-1,000 latency < 100 µs ✔ (31.0).
+- **Honest caveat:** strictly one-flow-at-a-time scoring costs **≈ 6.8 ms/flow** (~146 flows/s) because Python per-call overhead across all 150 trees dominates. Production inline use must micro-batch (as NetFlow/IPFIX/Zeek exporters already do) or compile the forest (Treelite/ONNX).
+- **Engineering fix found during validation:** SIEM alerts initially took ~30 ms because the stage-2 family classifier kept `n_jobs=-1` (thread-pool spin-up per single-flow call); pinning `n_jobs=1` cut alert latency to **≈ 9–13 ms** typical (occasional OS-jitter outliers up to 50 ms, reported as measured).
+- **Stage-2 family attribution (SIEM enrichment):** RF(100 trees) trained on 131,738 training-fold attack rows → test accuracy **75.3 %**, macro-F1 **0.568**; strong on Generic 97.2 %, Fuzzers 86.6 %, Shellcode 81.5 %, Reconnaissance 80.6 %; weak on DoS 43.0 %, Analysis 24.5 %, Backdoor 15.9 % (these families share near-identical flow statistics in UNSW-NB15). The family tag is therefore labelled a *stage-2 guess* in the SIEM log, with ground truth shown for audit.
+- **Streaming SIEM engine:** 20 seeded mixed test flows (6 Normal, 3 Exploits, 3 DoS, 3 Fuzzers, 2 Worms, 1 Generic, 1 Reconnaissance, 1 Backdoor) → 14 alerts with timestamp, severity (CRITICAL/HIGH/MEDIUM), confidence, latency and action (TCP RST / block or rate-limit); 1 Fuzzers flow missed (P(attack) 45.8 % < τ*) and shown explicitly as `FN — MISSED ATTACK`.
+- **Figures (300 DPI):** `latency_throughput.png`, `siem_alert_log.png`.
 
 ---
 

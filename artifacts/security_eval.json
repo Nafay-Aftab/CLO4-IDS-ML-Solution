@@ -1,0 +1,27 @@
+{
+  "tau_star": 0.5,
+  "tp": 31155,
+  "fp": 947,
+  "tn": 17653,
+  "fn": 1780,
+  "per_10k_flows": {
+    "false_alarms": 183.8,
+    "missed_attacks": 345.4
+  },
+  "normal_misclassified_as_attack_pct": 5.091,
+  "families_below_95pct": [
+    "Fuzzers",
+    "Analysis"
+  ],
+  "recall_by_family": {
+    "Generic": 0.99983,
+    "Exploits": 0.985626,
+    "Fuzzers": 0.683027,
+    "DoS": 0.99572,
+    "Reconnaissance": 0.997498,
+    "Analysis": 0.852336,
+    "Backdoor": 1.0,
+    "Shellcode": 0.956954,
+    "Worms": 1.0
+  }
+}

@@ -285,7 +285,7 @@ Train and optimize a `RandomForestClassifier` (and benchmark a `LightGBMClassifi
 ## Phase 5: Security-Centric Evaluation & Granular Attack Breakdown
 
 ### Status
-NOT_STARTED
+COMPLETED
 
 ### Git Branch
 `feature/phase-5-security-eval`
@@ -319,7 +319,30 @@ Conduct rigorous security evaluation: confusion matrix analysis, operational cos
 - Verify figure generation and sanity check that all 9 categories sum to total test attack count.
 
 ### Completion Evidence
-*(To be recorded by implementation agent)*
+- **Completed:** 2026-09-11 · Phase 4 merge on `main`: `fb8690e` (pushed).
+- **Script:** `python -m src.security_eval` → `artifacts/security_eval.json`, `artifacts/attack_recall.csv`. Sanity assertions **PASSED**: family supports sum to 32,935 test attacks; family misses sum to FN = 1,780; all 9 families have non-zero support.
+- **Confusion (τ* = 0.50):** TP 31,155 · FP 947 · TN 17,653 · FN 1,780 → per 10,000 flows ≈ **184 false alarms** and **345 missed attacks**.
+- **Per-family recall (95 % Wilson CI):**
+
+  | Family | Test flows | Detected | Missed | Recall | 95 % CI | Share of misses |
+  |---|---:|---:|---:|---:|---|---:|
+  | Generic | 11,774 | 11,772 | 2 | 99.98 % | [99.94, 100] | 0.1 % |
+  | Backdoor | 466 | 466 | 0 | 100.00 % | [99.18, 100] | 0.0 % |
+  | Worms | 35 | 35 | 0 | 100.00 % | [90.11, 100] | 0.0 % |
+  | Reconnaissance | 2,798 | 2,791 | 7 | 99.75 % | [99.48, 99.88] | 0.4 % |
+  | DoS | 3,271 | 3,257 | 14 | 99.57 % | [99.28, 99.74] | 0.8 % |
+  | Exploits | 8,905 | 8,777 | 128 | 98.56 % | [98.29, 98.79] | 7.2 % |
+  | Shellcode | 302 | 289 | 13 | 95.70 % | [92.78, 97.47] | 0.7 % |
+  | Analysis | 535 | 456 | 79 | 85.23 % | [81.98, 87.99] | 4.4 % |
+  | **Fuzzers** | 4,849 | 3,312 | **1,537** | **68.30 %** | [66.98, 69.60] | **86.4 %** |
+
+- **Security critique (authored from the measured data):**
+  - *Fuzzers are the dominant blind spot* — 1,537 of 1,780 misses (86 %). Fuzzing floods a service with malformed/random input to find crashable code; at flow level many fuzzing sessions are short, low-volume exchanges over ordinary services whose byte, TTL and timing statistics match benign clients. The Phase 4 ceiling analysis corroborates this: the *only* exact feature-vector collisions between classes in the whole dataset are Normal↔Fuzzers (928 Normal / 825 Fuzzers rows). **Implication:** an adversary fuzzing an internet-facing service for a zero-day would largely go unnoticed, pushing detection from the discovery phase to the far more damaging exploitation phase.
+  - *Analysis (85.2 %)* — port scans, spam and HTML-file penetration probes; 79 missed flows mean vulnerability-probing activity goes unlogged.
+  - *Rare ≠ undetected (contrary to the contract's expectation):* the rarest families, **Worms (35/35) and Backdoor (466/466), are fully detected** — their TTL/state fingerprints are highly distinctive. Worms' CI still spans [90.1 %, 100 %] because of tiny support, and a single missed worm is disproportionately dangerous because it self-propagates.
+  - *Mitigations:* payload-aware features (DPI, TLS/JA3 fingerprints) for Fuzzers/Analysis; family-specific or cost-sensitive thresholds; correlation with signature IDS and host EDR telemetry (defence in depth).
+- **Figures (300 DPI):** `confusion_matrix.png`, `attack_recall_breakdown.png`.
+- **Housekeeping:** `.gitignore` now whitelists `artifacts/*.log` so the Phase 4 run logs (`champion_run.log`, `champion_run1_rf_first_test_eval.log`) are versioned as evidence.
 
 ---
 

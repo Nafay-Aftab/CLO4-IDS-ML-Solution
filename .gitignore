@@ -32,6 +32,7 @@ A1-*.docx
 .vscode/
 .idea/
 *.log
+!artifacts/*.log
 *.tmp
 Thumbs.db
 .DS_Store

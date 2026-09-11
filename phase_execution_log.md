@@ -17,7 +17,7 @@
 ## Phase 0: Environment & Repository Scaffolding
 
 ### Status
-NOT_STARTED
+COMPLETED
 
 ### Git Branch
 `feature/phase-0-scaffolding`
@@ -53,7 +53,14 @@ Initialize a clean, reproducible project structure, configure `.gitignore`, veri
 - Run `python -c "import pandas, numpy, sklearn, matplotlib, seaborn, docx, lightgbm; print('All dependencies verified successfully.')"`.
 
 ### Completion Evidence
-*(To be recorded by implementation agent upon completion: Git commit hash, timestamps)*
+- **Completed:** 2026-09-11
+- **Environment:** CPython 3.10.10 isolated `.venv` (Windows 11, i7-11800H, 16 logical cores, 15.7 GB RAM).
+- **Pinned stack (verified by `python -m src.validate_env`):** pandas 2.2.3, numpy 1.26.4, scikit-learn 1.5.2, scipy 1.14.1, matplotlib 3.9.2, seaborn 0.13.2, python-docx 1.1.2, joblib 1.4.2, lightgbm 4.5.0, fastapi 0.115.6, uvicorn 0.32.1, python-multipart 0.0.20, nbformat 5.10.4, nbclient 0.10.2.
+- **Validation output:** `All dependencies verified successfully.`
+- **Dataset access:** `UNSW_NB15_training-set.csv` 82,332 rows × 45 cols; `UNSW_NB15_testing-set.csv` 175,341 rows × 45 cols.
+- **Scaffolding:** `src/` (config, validate_env), `notebooks/`, `figures/`, `reports/`, `models/`, `artifacts/`, `src/web/`; `.gitignore` excludes `.venv`, raw `UNSW-NB15_1..4.csv` dumps (~590 MB), `models/*.joblib`.
+- **Remote:** `origin` → `https://github.com/Nafay-Aftab/CLO4-IDS-ML-Solution.git`.
+- **Bootstrap commit (main):** `ed9c487`
 
 ---
 

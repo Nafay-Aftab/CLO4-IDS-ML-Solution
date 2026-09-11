@@ -11,6 +11,7 @@ env/
 
 # --- Jupyter ---
 .ipynb_checkpoints/
+notebooks/outputs/
 
 # --- Raw UNSW-NB15 full-capture dumps (~590 MB, not used by the pipeline) ---
 dataset/UNSW-NB15_1.csv

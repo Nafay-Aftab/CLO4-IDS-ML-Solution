@@ -504,7 +504,8 @@ Assemble all previous phases into a single, beautifully documented, self-contain
 ### Completion Evidence
 - **Completed:** 2026-09-11 · Phase 7 merge on `main`: `46b4934`; follow-up merges `1a82d85` (two-model scope) and `bb4e3c8` (defense-map removal), all pushed.
 - **Build:** `python -m src.build_notebook` assembles and executes the notebook headlessly via `nbclient` (equivalent to `nbconvert --execute`), writing `notebooks/CLO4_IDS_ML_Solution.ipynb`. The build fails if any cell raises an error. Log: `artifacts/notebook_build.log`.
-- **Result:** 42 cells (18 code, 24 markdown) · **0 errors** · 9 embedded figures · **end-to-end execution 73.1 s** (< 3 min target ✔).
+- **Result (first build):** 42 cells (18 code, 24 markdown) · **0 errors** · 9 embedded figures · **end-to-end execution 73.1 s** (< 3 min target ✔).
+- **Update: self-contained rebuild (student direction, after CP-3).** The brief asks for a notebook "containing the entire code", so the notebook no longer imports `src/`. `src/build_notebook.py` now lifts every function and constant verbatim from `src/` with `ast` and writes it into the notebook's own cells. One source of truth is kept, and the notebook runs standalone. Safeguards: the build aborts if any code cell references `src`, and a final **consistency-check cell asserts that 30 values** (τ*, baseline and champion accuracy/precision/recall/F1/FPR/AUC and confusion counts, 9 per-family recalls) **match `artifacts/` exactly**. Result: **65 cells (29 code, ≈ 760 lines of inline code) · 0 errors · 0 `src` references · 9 embedded figures · consistency check PASSED · executed end-to-end in 62.5 s** · 1.55 MB (notebook figures at 150 DPI in the git-ignored `notebooks/outputs/`, which also stops the notebook from overwriting the committed latency figure). The application (`python -m src.app`) and scripts still run entirely from `src/` and are unchanged.
 - **Structure:** all 13 sections from objective.md §7.A: executive summary & student metadata → imports/seed → ingestion & sanitisation → EDA (4 proofs + insight→decision notes) → leak-free split & pipeline → Decision-Tree baseline → tuned Random Forest champion → τ* calibration on OOB probabilities → comparative evaluation & confusion matrix → 9-family recall & security critique → Gini explainability → real-time benchmark & streaming SIEM → CISO recommendations.
 - **Self-contained & honest:** every table and figure is recomputed by the notebook's own cells. Narrative numbers are pulled from `artifacts/` at build time. The acceptance gates are printed as measured (F1 ✔; accuracy, recall, FPR ✘). The 138 s grid search is loaded from `artifacts/rf_cv_results.csv` (produced by `src.champion`), and the winning configuration is refitted in-notebook to stay under 3 minutes.
 - **Reproducibility check:** the in-notebook run reproduces the champion exactly (OOB accuracy 0.9488, τ* = 0.50, baseline and champion metrics identical to Phase 3/4). Live latency re-measurement this run: 7.85 µs/flow (127,425 flows/s), which is within normal wall-clock variance of the dedicated benchmark (6.35 µs/flow). The notebook states this explicitly. The notebook's re-rendered `latency_throughput.png` is not committed, so the repository figure stays tied to `artifacts/realtime_report.json`.
@@ -578,10 +579,10 @@ Author an extremely professional, academic 5–6 page MS Word deliverable matchi
 ## Phase 10: GitHub Repository Polish & Final QA Audit
 
 ### Status
-NOT_STARTED
+COMPLETED
 
 ### Git Branch
-`feature/phase-10-final-qa`
+`feature/phase-10-final-qa` (work carried on `feature/notebook-self-contained`, merged together)
 
 ### Objective
 Finalize `README.md`, verify git repository cleanliness, commit deliverables, and perform the final quality audit.
@@ -614,5 +615,16 @@ Finalize `README.md`, verify git repository cleanliness, commit deliverables, an
 - Full pre-submission checklist verification.
 
 ### Completion Evidence
-*(To be recorded by implementation agent)*
+- **Completed:** 2026-09-11 · Phase 9 merge on `main`: `a5cd945` (pushed). CP-3: the student reviewed the report and dashboard and approved both.
+- **README.md:** title, badges, student metadata, CISO objective, headline results with a transparency note on the ≥ 95 % gate, Mermaid architecture diagram, repository layout, dataset setup, quick-start table (environment → EDA → baseline → champion → security eval → real-time → dashboard → notebook → report), 9-family security analysis, explainability and latency figures, four dashboard screenshots, REST API list, sample SIEM alerts, references. It contains no defense-map section, per the student's direction.
+- **Repository hygiene (verified with `git check-ignore` / `git ls-files`):** raw `dataset/UNSW-NB15_1..4.csv` (~590 MB) are ignored; `models/*.joblib` are ignored (regenerable); `notebooks/outputs/` is ignored; the largest tracked file is `dataset/UNSW_NB15_testing-set.csv` at 30.8 MB (< GitHub's 50 MB warning); 74 tracked files.
+- **Scope changes directed by the student during QA:** (1) the project compares only the Decision-Tree baseline and the tuned Random Forest champion; (2) the defense-map section was removed from all Markdown files; (3) the notebook was made fully self-contained (see Phase 8 update).
+- **Pre-submission checklist against the assignment brief:**
+  - Dataset selection and justification (UNSW-NB15, real attack scenarios) ✔
+  - Preprocessing (missing values, categorical encoding, normalisation) and EDA ✔
+  - ML design and justification (Random Forest vs. Decision-Tree baseline) and implementation ✔
+  - Evaluation: accuracy, precision/recall for attacks, confusion matrix, critical per-family analysis ✔
+  - MS Word report (title page, executive summary, introduction, methodology, results, conclusion, references, GitHub link; cover + 6 pages) ✔
+  - Public GitHub repo with a documented notebook containing the entire code and a README (title, objective, dataset setup, how to run, results, sample screens) ✔
+  - The ≥ 95 % target from objective.md was **not fully met** (F1 95.81 % ✔; accuracy 94.71 %, recall 94.60 %, FPR 5.09 % ✘). This is stated plainly in the report, notebook, README and dashboard.
 

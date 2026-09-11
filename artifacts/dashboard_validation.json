@@ -1,0 +1,64 @@
+{
+  "GET / + static assets": "200 OK",
+  "GET /api/telemetry": {
+    "recall": 0.946,
+    "fpr": 0.0509,
+    "accuracy": 0.9471,
+    "latency_us": 6.35
+  },
+  "POST /api/predict/single (4 presets)": [
+    {
+      "preset": "Legitimate Web Traffic (HTTP)",
+      "truth": "Normal",
+      "verdict": "NORMAL",
+      "p_attack": 0.0,
+      "family": null,
+      "latency_ms": 9.21
+    },
+    {
+      "preset": "SYN Flood (DoS)",
+      "truth": "DoS",
+      "verdict": "ATTACK",
+      "p_attack": 0.9681,
+      "family": "DoS",
+      "latency_ms": 11.75
+    },
+    {
+      "preset": "Buffer Overflow (Exploit)",
+      "truth": "Exploits",
+      "verdict": "ATTACK",
+      "p_attack": 0.9901,
+      "family": "Exploits",
+      "latency_ms": 11.58
+    },
+    {
+      "preset": "Port Scan (Reconnaissance)",
+      "truth": "Reconnaissance",
+      "verdict": "ATTACK",
+      "p_attack": 0.9601,
+      "family": "Reconnaissance",
+      "latency_ms": 11.84
+    }
+  ],
+  "POST /api/predict/single (partial form)": {
+    "defaulted_features": 38,
+    "verdict": "ATTACK"
+  },
+  "POST /api/predict/batch (2,000-row sample)": {
+    "attacks": 1202,
+    "normal": 798,
+    "flows_per_s": 24062,
+    "accuracy": 0.9405,
+    "recall": 0.9322,
+    "fpr": 0.0455
+  },
+  "GET /api/predict/batch/{token}": "2000 enriched rows",
+  "POST /api/predict/batch (schema-less CSV)": "400 rejected as expected",
+  "GET /api/stream/simulated (SSE)": [
+    "#32204 ATTACK p=0.998 truth=Generic",
+    "#35152 ATTACK p=0.999 truth=Generic",
+    "#40912 ATTACK p=0.965 truth=Reconnaissance",
+    "#11379 NORMAL p=0.000 truth=Normal",
+    "#17497 ATTACK p=0.639 truth=Fuzzers"
+  ]
+}

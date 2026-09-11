@@ -28,7 +28,7 @@ You are operating as a Senior Security & ML Engineer at **SecureNet Corp.** The 
 |---|---|---|---|
 | **DEC-001** | **Dataset Selection** | **UNSW-NB15** (`UNSW_NB15_training-set.csv` + `UNSW_NB15_testing-set.csv`) | Modern CVE and synthetic attack profiles; realistic network flow statistics; avoids obsolete KDD99 artifacts and multi-gigabyte CIC-IDS memory crashes. Total: 257,673 rows. |
 | **DEC-002** | **Classification Formulation** | **Primary Binary Classifier (`Normal` vs `Malicious`) with Granular 9-Attack-Family Recall Breakdown** | Directly addresses CISO binary alert requirement while rigorously satisfying Step 4's critical security analysis on specific attack families (*Exploits, DoS, Fuzzers, Worms, etc.*). |
-| **DEC-003** | **Model Selection & Benchmark** | **Baseline: Simple Decision Tree (~88–91% floor)<br>Champion: Tuned Random Forest (Target: $\ge 95\%$ authentic metrics)<br>Challenger: LightGBM / XGBoost** | Ablation study demonstrating single-tree variance vs. ensemble bagging; unlocks Gini Feature Importance for SOC alert explainability; authentic $\ge 95\%$ test score. |
+| **DEC-003** | **Model Selection & Benchmark** | **Baseline: Simple Decision Tree (~88–91% floor)<br>Champion: Tuned Random Forest (Target: $\ge 95\%$ authentic metrics)** | Ablation study demonstrating single-tree variance vs. ensemble bagging; unlocks Gini Feature Importance for SOC alert explainability; authentic $\ge 95\%$ test score. |
 | **DEC-004** | **Data Pipeline & Preprocessing** | **Stratified 80/20 Train/Test Split (206,138 train / 51,535 test)<br>Categorical: `OneHotEncoder(handle_unknown='ignore')`<br>Numerical: Skewness Log1p + `RobustScaler`<br>Balancing: `class_weight='balanced'` (Strictly NO SMOTE)** | Zero data leakage; handles unseen test protocols (`icmp`, `rtp`) and states (`no`, `PAR`, `ECO`, `URN`); preserves physical network packet laws without synthetic KNN distortion. |
 | **DEC-005** | **Real-Time Threat Detection PoC** | **Inference Latency Benchmark ($\mu\text{s}$/flow, flows/sec) + Simulated SIEM Streaming Alert Engine** | Empirically proves line-rate suitability on 1 Gbps / 10 Gbps network trunks; outputs real-time alert logs with timestamps, category, and confidence. |
 | **DEC-006** | **Deliverables & Report Specification** | **5–6 Page Academic MS Word Document + GitHub Repo + Defense Map** | Authored for Dr. Nadeem Sarwar with professional typography, corporate color palette, embedded high-DPI figures, and complete viva defense mappings. |
@@ -45,7 +45,7 @@ You are operating as a Senior Security & ML Engineer at **SecureNet Corp.** The 
 - Security-focused Exploratory Data Analysis (EDA) uncovering attack distributions, flow durations, and byte volume skews.
 - Strict train-only pipeline fitting (`fit` on training fold only; `transform` on test fold).
 - Decision Tree baseline implementation.
-- Systematic hyperparameter tuning of Random Forest (and optional LightGBM challenger) using cross-validation.
+- Systematic hyperparameter tuning of Random Forest using cross-validation.
 - Precision-Recall decision threshold calibration ($\tau^*$) to guarantee $\ge 95\%$ authentic attack recall and F1-score.
 - Granular 9-category attack recall table dissecting security implications of missed minority attacks (e.g., Worms, Backdoors).
 - Real-time line-rate latency and throughput profiling.
@@ -162,7 +162,7 @@ The implementation must define a dedicated simulation module:
   4. Security Exploratory Data Analysis (EDA) with 3 publication-grade figures
   5. Preprocessing Pipeline & Stratified Split
   6. Baseline Model (Decision Tree)
-  7. Champion Model (Tuned Random Forest + Optional LightGBM)
+  7. Champion Model (Tuned Random Forest)
   8. Decision Threshold Optimization
   9. Comparative Model Evaluation & Confusion Matrix
   10. Granular 9-Attack-Category Recall Breakdown & Security Critique
@@ -215,7 +215,7 @@ A high-performance, single-command Python web dashboard (`python -m src.app` on 
 - **Four Dedicated Functional Views:**
   1. **Executive Telemetry & KPI View:**
      - Live KPI metric cards: Total Flows Analyzed, Attack Detection Rate ($\ge 95\%$), False Alarm Rate ($< 5\%$), Mean Flow Latency ($< 50\,\mu\text{s}$).
-     - Interactive Chart.js graphs: Model Performance Comparison (Decision Tree vs. Random Forest vs. LightGBM), Feature Importance ranking, and interactive Confusion Matrix.
+     - Interactive Chart.js graphs: Model Performance Comparison (Decision Tree baseline vs. Tuned Random Forest champion), Feature Importance ranking, and interactive Confusion Matrix.
   2. **Live Real-Time Streaming Threat Feed:**
      - Simulated streaming engine feeding network flows sequentially into the pipeline.
      - Live SIEM incident table with real-time rows arriving, status badges, attack category tag, confidence score, and mitigation action.

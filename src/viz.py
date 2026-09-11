@@ -12,7 +12,7 @@ from src.config import FIG_DIR, FIG_DPI  # noqa: E402
 # Fixed identity mapping used by every figure: Normal = slot 1, Attack = slot 2.
 NORMAL = "#2a78d6"
 ATTACK = "#eb6834"
-ACCENT = "#1baf7a"   # slot 3 — third series only (e.g. LightGBM)
+ACCENT = "#1baf7a"   # slot 3 — third series only (e.g. F1 curve)
 SURFACE = "#fcfcfb"
 INK = "#0b0b0b"
 INK_2 = "#52514e"

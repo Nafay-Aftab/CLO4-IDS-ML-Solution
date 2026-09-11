@@ -20,16 +20,5 @@
     "f1": 0.95807,
     "fpr": 0.050914,
     "roc_auc": 0.991535
-  },
-  {
-    "name": "LightGBM (challenger)",
-    "threshold": 0.43,
-    "champion": false,
-    "accuracy": 0.950597,
-    "precision": 0.970899,
-    "recall": 0.951207,
-    "f1": 0.960952,
-    "fpr": 0.050484,
-    "roc_auc": 0.992476
   }
 ]

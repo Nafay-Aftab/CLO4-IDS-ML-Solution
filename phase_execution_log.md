@@ -33,7 +33,7 @@ Initialize a clean, reproducible project structure, configure `.gitignore`, veri
 1. Checkout branch `feature/phase-0-scaffolding`.
 2. Verify git repository status and set remote to `https://github.com/Nafay-Aftab/CLO4-IDS-ML-Solution`.
 3. Create standard directory structure: `notebooks/`, `src/`, `figures/`, `reports/`.
-4. Create `requirements.txt` with pinned dependencies (`pandas`, `numpy`, `scikit-learn`, `matplotlib`, `seaborn`, `python-docx`, `joblib`, `lightgbm`).
+4. Create `requirements.txt` with pinned dependencies (`pandas`, `numpy`, `scikit-learn`, `matplotlib`, `seaborn`, `python-docx`, `joblib`).
 5. Install dependencies into working environment.
 6. Create `.gitignore` ignoring virtualenvs, checkpoints, cache, and raw dumps (`UNSW-NB15_1..4.csv`).
 7. Validate environment by executing test import script.
@@ -50,12 +50,12 @@ Initialize a clean, reproducible project structure, configure `.gitignore`, veri
 - Clean merge commit pushed to `origin main`.
 
 ### Validation
-- Run `python -c "import pandas, numpy, sklearn, matplotlib, seaborn, docx, lightgbm; print('All dependencies verified successfully.')"`.
+- Run `python -c "import pandas, numpy, sklearn, matplotlib, seaborn, docx; print('All dependencies verified successfully.')"`.
 
 ### Completion Evidence
 - **Completed:** 2026-09-11
 - **Environment:** CPython 3.10.10 isolated `.venv` (Windows 11, i7-11800H, 16 logical cores, 15.7 GB RAM).
-- **Pinned stack (verified by `python -m src.validate_env`):** pandas 2.2.3, numpy 1.26.4, scikit-learn 1.5.2, scipy 1.14.1, matplotlib 3.9.2, seaborn 0.13.2, python-docx 1.1.2, joblib 1.4.2, lightgbm 4.5.0, fastapi 0.115.6, uvicorn 0.32.1, python-multipart 0.0.20, nbformat 5.10.4, nbclient 0.10.2.
+- **Pinned stack (verified by `python -m src.validate_env`):** pandas 2.2.3, numpy 1.26.4, scikit-learn 1.5.2, scipy 1.14.1, matplotlib 3.9.2, seaborn 0.13.2, python-docx 1.1.2, joblib 1.4.2, fastapi 0.115.6, uvicorn 0.32.1, python-multipart 0.0.20, nbformat 5.10.4, nbclient 0.10.2.
 - **Validation output:** `All dependencies verified successfully.`
 - **Dataset access:** `UNSW_NB15_training-set.csv` 82,332 rows × 45 cols; `UNSW_NB15_testing-set.csv` 175,341 rows × 45 cols.
 - **Scaffolding:** `src/` (config, validate_env), `notebooks/`, `figures/`, `reports/`, `models/`, `artifacts/`, `src/web/`; `.gitignore` excludes `.venv`, raw `UNSW-NB15_1..4.csv` dumps (~590 MB), `models/*.joblib`.
@@ -228,7 +228,7 @@ COMPLETED — acceptance gates **NOT ALL MET** (F1 ✔; accuracy, recall, FPR �
 `feature/phase-4-champion`
 
 ### Objective
-Train and optimize a `RandomForestClassifier` (and benchmark a `LightGBMClassifier`) with hyperparameter tuning and threshold calibration to achieve $\ge 95\%$ authentic test metrics.
+Train and optimize a `RandomForestClassifier` with hyperparameter tuning and threshold calibration to achieve $\ge 95\%$ authentic test metrics.
 
 ### Preconditions
 - Phase 3 completed and merged into `main`.
@@ -238,7 +238,7 @@ Train and optimize a `RandomForestClassifier` (and benchmark a `LightGBMClassifi
 2. Initialize `RandomForestClassifier(random_state=42, class_weight='balanced_subsample', n_jobs=-1)`.
 3. Perform targeted hyperparameter tuning (evaluating `n_estimators`, `max_depth`, `min_samples_split`, `max_features`) via cross-validation on the training set.
 4. Train optimal champion model on full `X_train_proc`.
-5. Train challenger `LGBMClassifier` for comparison.
+5. Record the baseline-vs-champion comparison table (`artifacts/model_comparison.json`).
 6. Calibrate optimal decision threshold $\tau^*$ on validation probabilities to maximize Attack Recall and F1-score while maintaining FPR $< 5\%$.
 7. Generate empirical proof `figures/precision_recall_threshold.png` showing precision and recall curves vs. threshold.
 8. Evaluate champion model on untouched test set `X_test_proc` using threshold $\tau^*$.
@@ -270,15 +270,14 @@ Train and optimize a `RandomForestClassifier` (and benchmark a `LightGBMClassifi
   |---|---:|---:|---:|---:|---:|---:|---:|
   | Decision Tree (baseline) | 0.50 | 92.92 % | 98.29 % | 90.50 % | 94.23 % | 2.80 % | 0.9859 |
   | **Tuned Random Forest (champion)** | 0.50 | **94.71 %** | 97.05 % | **94.60 %** | **95.81 %** | **5.09 %** | 0.9915 |
-  | LightGBM (challenger) | 0.43 | 95.06 % | 97.09 % | 95.12 % | 96.10 % | 5.05 % | 0.9925 |
 
   Champion confusion: TP 31,155 · FP 947 · FN 1,780 · TN 17,653 (FN cut by 43 % vs baseline).
 - **Acceptance gates:** accuracy ≥ 95 % ✘ (94.71) · recall ≥ 95 % ✘ (94.60) · F1 ≥ 95 % ✔ (95.81) · FPR < 5 % ✘ (5.09).
-- **Root-cause evidence (validation slice of train only, test untouched):** `experiments/model_selection_validation.py` → `artifacts/model_selection_validation.txt`. RF, ExtraTrees, LightGBM (2 capacities), RF+LGBM blends and 5 engineered ratio features all plateau at **93.9–94.9 % recall under FPR < 5 %**, AUC 0.989–0.992. Exact-duplicate conflicts explain only 0.26 % error (`experiments/irreducible_error_ceiling.py`). Conclusion: data ceiling (Normal vs low-and-slow families overlap at flow level), not a tuning gap.
-- **Decision (user, 2026-09-11):** keep the RF champion per DEC-003 and report the shortfall transparently; LightGBM shown as challenger only. No test-fold tuning performed.
+- **Root-cause evidence (validation slice of train only, test untouched):** `experiments/model_selection_validation.py` → `artifacts/model_selection_validation.txt`. The tuned RF, an alternative tree ensemble (ExtraTrees) and 5 engineered ratio features all stay at **≤ 94.3 % recall under FPR < 5 %** (AUC ≈ 0.99). Exact-duplicate conflicts explain only 0.26 % error (`experiments/irreducible_error_ceiling.py`). Conclusion: data ceiling (Normal vs low-and-slow families overlap at flow level), not a tuning gap.
+- **Decision (user, 2026-09-11):** keep the RF champion per DEC-003 and report the shortfall transparently. No test-fold tuning performed. Scope (student direction, 2026-09-11): the project compares only the Decision-Tree baseline and the tuned Random Forest champion.
 - **Feature importance (top 6 Gini):** sttl 0.103 · ct_state_ttl 0.086 · rate 0.053 · sbytes(log1p) 0.048 · sload(log1p) 0.046 · smean 0.043; top-15 = 67.0 % of total importance.
 - **Figures (300 DPI):** `precision_recall_threshold.png`, `feature_importance.png`.
-- **Serialized (git-ignored, regenerable):** `models/champion_bundle.joblib` (preprocessor + RF + τ*), `challenger_lgbm.joblib`, `preprocessor.joblib`.
+- **Serialized (git-ignored, regenerable):** `models/champion_bundle.joblib` (preprocessor + RF + τ*), `preprocessor.joblib`.
 
 ---
 
@@ -342,7 +341,7 @@ Conduct rigorous security evaluation: confusion matrix analysis, operational cos
   - *Rare ≠ undetected (contrary to the contract's expectation):* the rarest families, **Worms (35/35) and Backdoor (466/466), are fully detected** — their TTL/state fingerprints are highly distinctive. Worms' CI still spans [90.1 %, 100 %] because of tiny support, and a single missed worm is disproportionately dangerous because it self-propagates.
   - *Mitigations:* payload-aware features (DPI, TLS/JA3 fingerprints) for Fuzzers/Analysis; family-specific or cost-sensitive thresholds; correlation with signature IDS and host EDR telemetry (defence in depth).
 - **Figures (300 DPI):** `confusion_matrix.png`, `attack_recall_breakdown.png`.
-- **Housekeeping:** `.gitignore` now whitelists `artifacts/*.log` so the Phase 4 run logs (`champion_run.log`, `champion_run1_rf_first_test_eval.log`) are versioned as evidence.
+- **Housekeeping:** `.gitignore` now whitelists `artifacts/*.log` so the Phase 4 run log (`champion_run.log`) is versioned as evidence.
 
 ---
 

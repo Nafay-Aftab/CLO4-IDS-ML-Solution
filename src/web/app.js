@@ -146,8 +146,8 @@ async function initTelemetry() {
 
 function renderModels(models) {
   const metrics = [["accuracy", "Accuracy"], ["precision", "Precision"], ["recall", "Attack recall"], ["f1", "F1-score"], ["specificity", "Specificity"]];
-  // Champion emphasised in cyan; baseline recessive gray; challenger violet — identity follows the model.
-  const colorOf = (m) => (m.champion ? C.cyan : /baseline/i.test(m.name) ? C.faint : C.violet);
+  // Champion emphasised in cyan; baseline recessive gray.
+  const colorOf = (m) => (m.champion ? C.cyan : C.muted);
   const datasets = models.map((m) => ({
     label: m.name + (m.champion ? "  (champion)" : ""),
     data: metrics.map(([key]) => m[key] * 100),

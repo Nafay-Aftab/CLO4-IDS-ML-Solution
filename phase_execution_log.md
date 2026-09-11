@@ -114,7 +114,7 @@ Ingest both UNSW-NB15 CSV files, sanitize headers (UTF-8 BOM), separate features
 - **Skewness → Log1p insight:** raw skew sbytes **47.92**, dbytes **44.34**, sload **8.93**, dur **8.02**; after log1p **1.15 / 0.33 / −0.41 / 3.35**. sload spans **10 orders of magnitude**, sbytes/dbytes ~5.8. log1p exposes separable Normal/Attack modes (e.g. attack sload peak at log≈18) that are invisible in raw space.
 - **Protocol tail → `handle_unknown='ignore'` insight:** 133 distinct protocols; top-10 cover 93.6% of flows, the other 123 only 6.4%; **126 protocols appear only in attack traffic**. Rare values can be absent from the training fold, so the encoder must map unseen values to an all-zero vector rather than crash.
 - **Correlation insight:** near-perfect collinear pairs (is_ftp_login~ct_ftp_cmd 1.00, trans_depth~ct_flw_http_mthd 1.00, tcprtt~synack 0.996, dpkts~dbytes 0.989) → tree ensembles are preferred (collinearity-insensitive). Strongest |ρ| with label: sttl 0.66, ct_state_ttl 0.586, dload 0.585.
-- **Data-quality caveat (honest ceiling):** 103,989 rows duplicate another row's feature vector; **414 duplicate groups carry conflicting labels** → irreducible error floor for any classifier.
+- **Data-quality caveat:** 103,989 rows duplicate another row's feature vector; **414 duplicate groups carry conflicting labels** (1,758 rows). *Amended in Phase 4:* quantified by `experiments/irreducible_error_ceiling.py`, these conflicts cost only **661 irreducible errors (0.26 %)** — oracle max accuracy 99.74 % — so they are **not** the binding performance ceiling.
 - **Figures (300 DPI):** `eda_attack_distribution.png` 276 KB · `eda_traffic_volume_skew.png` 566 KB · `eda_top_protocols.png` 202 KB · `eda_feature_correlation.png` 315 KB (all >50 KB ✔).
 
 ---
@@ -222,7 +222,7 @@ Train a simple, interpretable `DecisionTreeClassifier` baseline to establish the
 ## Phase 4: Champion Model Optimization ($\ge 95\%$ Target)
 
 ### Status
-NOT_STARTED
+COMPLETED — acceptance gates **NOT ALL MET** (F1 ✔; accuracy, recall, FPR ✘ by < 0.5 pp). Reported as measured per user decision 2026-09-11.
 
 ### Git Branch
 `feature/phase-4-champion`
@@ -260,7 +260,25 @@ Train and optimize a `RandomForestClassifier` (and benchmark a `LightGBMClassifi
 - Programmatic assertions on test metrics ($\ge 0.95$).
 
 ### Completion Evidence
-*(To be recorded by implementation agent)*
+- **Completed:** 2026-09-11 · Phase 3 merge on `main`: `0abfa4a` (pushed).
+- **Script:** `python -m src.champion` → `artifacts/metrics_champion.json`, `model_comparison.json`, `rf_cv_results.csv`, `threshold_sweep_oob.csv`, `feature_importance.csv`, `test_predictions.csv`; run log `artifacts/champion_run.log`. Deterministic: two independent runs produced identical metrics.
+- **Tuning:** `GridSearchCV`, 24 configs (n_estimators {150,200} × max_depth {25,30,None} × min_samples_split {5,10} × min_samples_leaf {2,4}; max_features √p; `balanced_subsample`) × 3 stratified folds, F1 scoring, on a stratified 30 % training subsample (61,841 rows) in 134 s → **n_estimators=150, max_depth=None, min_samples_split=5, min_samples_leaf=2** (CV F1 0.9529). Final fit on all 206,138 rows: 15.8 s, OOB accuracy 0.9488.
+- **τ* calibration (leak-free):** RF out-of-bag probabilities; rule fixed in advance = max recall s.t. OOB FPR < 5 % within [0.30, 0.70] → **τ* = 0.50** (OOB recall 0.9479, F1 0.9595, FPR just under 5 %). Any lower τ breaches the FPR budget on OOB data.
+- **Untouched-test results:**
+
+  | Model | τ | Accuracy | Precision | Recall | F1 | FPR | AUC |
+  |---|---:|---:|---:|---:|---:|---:|---:|
+  | Decision Tree (baseline) | 0.50 | 92.92 % | 98.29 % | 90.50 % | 94.23 % | 2.80 % | 0.9859 |
+  | **Tuned Random Forest (champion)** | 0.50 | **94.71 %** | 97.05 % | **94.60 %** | **95.81 %** | **5.09 %** | 0.9915 |
+  | LightGBM (challenger) | 0.43 | 95.06 % | 97.09 % | 95.12 % | 96.10 % | 5.05 % | 0.9925 |
+
+  Champion confusion: TP 31,155 · FP 947 · FN 1,780 · TN 17,653 (FN cut by 43 % vs baseline).
+- **Acceptance gates:** accuracy ≥ 95 % ✘ (94.71) · recall ≥ 95 % ✘ (94.60) · F1 ≥ 95 % ✔ (95.81) · FPR < 5 % ✘ (5.09).
+- **Root-cause evidence (validation slice of train only, test untouched):** `experiments/model_selection_validation.py` → `artifacts/model_selection_validation.txt`. RF, ExtraTrees, LightGBM (2 capacities), RF+LGBM blends and 5 engineered ratio features all plateau at **93.9–94.9 % recall under FPR < 5 %**, AUC 0.989–0.992. Exact-duplicate conflicts explain only 0.26 % error (`experiments/irreducible_error_ceiling.py`). Conclusion: data ceiling (Normal vs low-and-slow families overlap at flow level), not a tuning gap.
+- **Decision (user, 2026-09-11):** keep the RF champion per DEC-003 and report the shortfall transparently; LightGBM shown as challenger only. No test-fold tuning performed.
+- **Feature importance (top 6 Gini):** sttl 0.103 · ct_state_ttl 0.086 · rate 0.053 · sbytes(log1p) 0.048 · sload(log1p) 0.046 · smean 0.043; top-15 = 67.0 % of total importance.
+- **Figures (300 DPI):** `precision_recall_threshold.png`, `feature_importance.png`.
+- **Serialized (git-ignored, regenerable):** `models/champion_bundle.joblib` (preprocessor + RF + τ*), `challenger_lgbm.joblib`, `preprocessor.joblib`.
 
 ---
 

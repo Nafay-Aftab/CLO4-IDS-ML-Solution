@@ -1,0 +1,196 @@
+feature,feature_pretty,gini_importance
+num__sttl,sttl,0.103113
+num__ct_state_ttl,ct_state_ttl,0.086173
+num__rate,rate,0.052822
+log__sbytes,sbytes (log1p),0.047905
+log__sload,sload (log1p),0.045571
+num__smean,smean,0.043295
+num__dttl,dttl,0.038471
+num__ct_dst_sport_ltm,ct_dst_sport_ltm,0.037368
+num__ct_dst_src_ltm,ct_dst_src_ltm,0.037354
+num__ct_srv_dst,ct_srv_dst,0.036576
+log__dinpkt,dinpkt (log1p),0.033308
+log__dload,dload (log1p),0.031305
+num__ct_srv_src,ct_srv_src,0.026444
+log__dbytes,dbytes (log1p),0.025235
+num__dmean,dmean,0.024678
+num__tcprtt,tcprtt,0.022628
+log__sinpkt,sinpkt (log1p),0.022442
+num__synack,synack,0.021995
+log__dur,dur (log1p),0.021244
+num__ackdat,ackdat,0.020463
+num__dpkts,dpkts,0.020061
+cat__state_INT,state = INT,0.017649
+log__djit,djit (log1p),0.016308
+num__spkts,spkts,0.014632
+log__sjit,sjit (log1p),0.013773
+num__dloss,dloss,0.010715
+cat__service_-,service = -,0.010454
+num__sloss,sloss,0.010349
+num__ct_dst_ltm,ct_dst_ltm,0.009954
+cat__state_CON,state = CON,0.00962
+num__swin,swin,0.008376
+cat__proto_tcp,proto = tcp,0.008145
+num__ct_src_ltm,ct_src_ltm,0.008023
+num__ct_src_dport_ltm,ct_src_dport_ltm,0.007595
+num__stcpb,stcpb,0.006884
+num__is_sm_ips_ports,is_sm_ips_ports,0.006317
+cat__proto_udp,proto = udp,0.005759
+num__dtcpb,dtcpb,0.005574
+num__response_body_len,response_body_len,0.003601
+cat__service_dns,service = dns,0.003461
+cat__proto_arp,proto = arp,0.003242
+cat__service_http,service = http,0.002802
+cat__state_FIN,state = FIN,0.00273
+num__dwin,dwin,0.002531
+cat__state_REQ,state = REQ,0.00214
+cat__proto_unas,proto = unas,0.002035
+num__trans_depth,trans_depth,0.001923
+num__ct_flw_http_mthd,ct_flw_http_mthd,0.00149
+cat__proto_sctp,proto = sctp,0.001241
+cat__service_smtp,service = smtp,0.000662
+cat__proto_ospf,proto = ospf,0.000618
+cat__service_ftp-data,service = ftp-data,0.000495
+cat__service_ftp,service = ftp,0.000361
+cat__proto_igmp,proto = igmp,0.00026
+cat__service_ssh,service = ssh,0.000233
+num__ct_ftp_cmd,ct_ftp_cmd,0.000189
+cat__service_pop3,service = pop3,0.000174
+num__is_ftp_login,is_ftp_login,0.000172
+cat__proto_sep,proto = sep,0.000153
+cat__proto_ipv6,proto = ipv6,0.000128
+cat__proto_mobile,proto = mobile,0.000121
+cat__proto_swipe,proto = swipe,0.000108
+cat__proto_sun-nd,proto = sun-nd,7.7e-05
+cat__state_ECO,state = ECO,5e-05
+cat__proto_rvd,proto = rvd,4.5e-05
+cat__proto_icmp,proto = icmp,4.1e-05
+cat__service_dhcp,service = dhcp,3.3e-05
+cat__state_RST,state = RST,3e-05
+cat__proto_mux,proto = mux,1.7e-05
+cat__proto_st2,proto = st2,1.7e-05
+cat__proto_cbt,proto = cbt,1.6e-05
+cat__service_radius,service = radius,1.5e-05
+cat__proto_rsvp,proto = rsvp,1.5e-05
+cat__proto_gre,proto = gre,1.4e-05
+cat__proto_any,proto = any,1.2e-05
+cat__proto_pim,proto = pim,1.2e-05
+cat__service_ssl,service = ssl,8e-06
+cat__proto_il,proto = il,8e-06
+cat__proto_i-nlsp,proto = i-nlsp,8e-06
+cat__proto_bna,proto = bna,7e-06
+cat__proto_ip,proto = ip,6e-06
+cat__service_irc,service = irc,5e-06
+cat__proto_chaos,proto = chaos,5e-06
+cat__service_snmp,service = snmp,5e-06
+cat__proto_visa,proto = visa,4e-06
+cat__proto_tp++,proto = tp++,4e-06
+cat__proto_xnet,proto = xnet,3e-06
+cat__proto_trunk-2,proto = trunk-2,3e-06
+cat__proto_sdrp,proto = sdrp,3e-06
+cat__proto_sprite-rpc,proto = sprite-rpc,3e-06
+cat__proto_trunk-1,proto = trunk-1,3e-06
+cat__proto_snp,proto = snp,3e-06
+cat__proto_ipv6-route,proto = ipv6-route,3e-06
+cat__proto_compaq-peer,proto = compaq-peer,3e-06
+cat__proto_iso-tp4,proto = iso-tp4,3e-06
+cat__proto_pgm,proto = pgm,2e-06
+cat__proto_emcon,proto = emcon,2e-06
+cat__proto_aris,proto = aris,2e-06
+cat__proto_xtp,proto = xtp,2e-06
+cat__proto_ipv6-frag,proto = ipv6-frag,2e-06
+cat__proto_ddp,proto = ddp,2e-06
+cat__proto_kryptolan,proto = kryptolan,2e-06
+cat__proto_3pc,proto = 3pc,2e-06
+cat__proto_idpr,proto = idpr,2e-06
+cat__proto_ipcv,proto = ipcv,2e-06
+cat__proto_vrrp,proto = vrrp,2e-06
+cat__proto_netblt,proto = netblt,2e-06
+cat__proto_idpr-cmtp,proto = idpr-cmtp,2e-06
+cat__proto_idrp,proto = idrp,2e-06
+cat__proto_mtp,proto = mtp,2e-06
+cat__proto_vmtp,proto = vmtp,1e-06
+cat__proto_fire,proto = fire,1e-06
+cat__proto_srp,proto = srp,1e-06
+cat__proto_wsn,proto = wsn,1e-06
+cat__proto_narp,proto = narp,1e-06
+cat__proto_leaf-2,proto = leaf-2,1e-06
+cat__proto_iatp,proto = iatp,1e-06
+cat__proto_bbn-rcc,proto = bbn-rcc,1e-06
+cat__proto_merit-inp,proto = merit-inp,1e-06
+cat__proto_igp,proto = igp,1e-06
+cat__proto_dcn,proto = dcn,1e-06
+cat__proto_micp,proto = micp,1e-06
+cat__proto_cftp,proto = cftp,1e-06
+cat__proto_sccopmce,proto = sccopmce,1e-06
+cat__proto_ipnip,proto = ipnip,1e-06
+cat__proto_sat-expak,proto = sat-expak,1e-06
+cat__proto_tlsp,proto = tlsp,1e-06
+cat__proto_larp,proto = larp,1e-06
+cat__proto_crudp,proto = crudp,1e-06
+cat__proto_ipcomp,proto = ipcomp,1e-06
+cat__proto_leaf-1,proto = leaf-1,1e-06
+cat__proto_ptp,proto = ptp,1e-06
+cat__proto_iplt,proto = iplt,1e-06
+cat__proto_ipv6-opts,proto = ipv6-opts,1e-06
+cat__proto_mhrp,proto = mhrp,1e-06
+cat__proto_ggp,proto = ggp,1e-06
+cat__proto_scps,proto = scps,1e-06
+cat__proto_wb-mon,proto = wb-mon,1e-06
+cat__proto_sps,proto = sps,1e-06
+cat__proto_mfe-nsp,proto = mfe-nsp,1e-06
+cat__proto_pup,proto = pup,0.0
+cat__proto_xns-idp,proto = xns-idp,0.0
+cat__proto_aes-sp3-d,proto = aes-sp3-d,0.0
+cat__proto_nsfnet-igp,proto = nsfnet-igp,0.0
+cat__proto_cphb,proto = cphb,0.0
+cat__proto_irtp,proto = irtp,0.0
+cat__proto_smp,proto = smp,0.0
+cat__proto_skip,proto = skip,0.0
+cat__proto_pnni,proto = pnni,0.0
+cat__proto_uti,proto = uti,0.0
+cat__proto_ipv6-no,proto = ipv6-no,0.0
+cat__proto_encap,proto = encap,0.0
+cat__proto_iso-ip,proto = iso-ip,0.0
+cat__proto_qnx,proto = qnx,0.0
+cat__proto_pvp,proto = pvp,0.0
+cat__proto_nvp,proto = nvp,0.0
+cat__proto_pri-enc,proto = pri-enc,0.0
+cat__proto_rdp,proto = rdp,0.0
+cat__proto_prm,proto = prm,0.0
+cat__proto_secure-vmtp,proto = secure-vmtp,0.0
+cat__proto_dgp,proto = dgp,0.0
+cat__proto_cpnx,proto = cpnx,0.0
+cat__proto_etherip,proto = etherip,0.0
+cat__proto_ddx,proto = ddx,0.0
+cat__proto_sm,proto = sm,0.0
+cat__proto_egp,proto = egp,0.0
+cat__proto_pipe,proto = pipe,0.0
+cat__proto_ipip,proto = ipip,0.0
+cat__proto_argus,proto = argus,0.0
+cat__proto_hmp,proto = hmp,0.0
+cat__proto_zero,proto = zero,0.0
+cat__proto_a/n,proto = a/n,0.0
+cat__proto_ifmp,proto = ifmp,0.0
+cat__proto_wb-expak,proto = wb-expak,0.0
+cat__proto_tcf,proto = tcf,0.0
+cat__proto_crtp,proto = crtp,0.0
+cat__proto_ipx-n-ip,proto = ipx-n-ip,0.0
+cat__proto_l2tp,proto = l2tp,0.0
+cat__proto_fc,proto = fc,0.0
+cat__proto_stp,proto = stp,0.0
+cat__proto_ax.25,proto = ax.25,0.0
+cat__proto_isis,proto = isis,0.0
+cat__proto_sat-mon,proto = sat-mon,0.0
+cat__proto_br-sat-mon,proto = br-sat-mon,0.0
+cat__proto_ippc,proto = ippc,0.0
+cat__state_ACC,state = ACC,0.0
+cat__proto_eigrp,proto = eigrp,0.0
+cat__proto_ib,proto = ib,0.0
+cat__proto_gmtp,proto = gmtp,0.0
+cat__proto_vines,proto = vines,0.0
+cat__proto_ttp,proto = ttp,0.0
+cat__proto_rtp,proto = rtp,0.0
+cat__state_URN,state = URN,0.0
+cat__state_no,state = no,0.0
+cat__state_CLO,state = CLO,0.0

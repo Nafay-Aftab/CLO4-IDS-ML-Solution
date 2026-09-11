@@ -1,0 +1,18 @@
+{
+  "accuracy": 0.929174,
+  "precision": 0.982852,
+  "recall": 0.904964,
+  "f1": 0.942302,
+  "fpr": 0.027957,
+  "fnr": 0.095036,
+  "tn": 18080,
+  "fp": 520,
+  "fn": 3130,
+  "tp": 29805,
+  "roc_auc": 0.985918,
+  "model": "DecisionTree(max_depth=10, balanced)",
+  "train_seconds": 4.151,
+  "threshold": 0.5,
+  "n_leaves": 336,
+  "depth": 10
+}

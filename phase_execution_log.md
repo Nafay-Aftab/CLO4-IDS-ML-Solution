@@ -174,7 +174,7 @@ Build an isolated, leak-free feature engineering pipeline with stratified partit
 ## Phase 3: Baseline Model Training & Evaluation
 
 ### Status
-NOT_STARTED
+COMPLETED
 
 ### Git Branch
 `feature/phase-3-baseline`
@@ -205,7 +205,17 @@ Train a simple, interpretable `DecisionTreeClassifier` baseline to establish the
 - Verify baseline metrics are stored and non-zero.
 
 ### Completion Evidence
-*(To be recorded by implementation agent)*
+- **Completed:** 2026-09-11 · Phase 2 merge on `main`: `3d079c2` (pushed).
+- **Script:** `python -m src.baseline` → `artifacts/metrics_baseline.json` (assertions: train < 10 s, all metrics > 0 — **PASSED**).
+- **Model:** `DecisionTreeClassifier(max_depth=10, class_weight='balanced', random_state=42)`, trained in **4.15 s**.
+- **Untouched-test metrics (τ = 0.50):**
+
+  | Accuracy | Precision | Attack Recall | F1 | FPR | ROC-AUC |
+  |---:|---:|---:|---:|---:|---:|
+  | 92.92 % | 98.29 % | 90.50 % | 94.23 % | 2.80 % | 0.9859 |
+
+  Confusion: TP 29,805 · FP 520 · FN 3,130 · TN 18,080.
+- **Deviation note (honest):** accuracy 92.92 % is *above* the contract's anticipated 88–91 % floor. The single tree is conservative — high precision but **3,130 missed attacks (9.5 % FNR)**, which is the security gap the ensemble champion must close.
 
 ---
 

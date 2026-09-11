@@ -31,7 +31,7 @@ You are operating as a Senior Security & ML Engineer at **SecureNet Corp.** The 
 | **DEC-003** | **Model Selection & Benchmark** | **Baseline: Simple Decision Tree (~88–91% floor)<br>Champion: Tuned Random Forest (Target: $\ge 95\%$ authentic metrics)** | Ablation study demonstrating single-tree variance vs. ensemble bagging; unlocks Gini Feature Importance for SOC alert explainability; authentic $\ge 95\%$ test score. |
 | **DEC-004** | **Data Pipeline & Preprocessing** | **Stratified 80/20 Train/Test Split (206,138 train / 51,535 test)<br>Categorical: `OneHotEncoder(handle_unknown='ignore')`<br>Numerical: Skewness Log1p + `RobustScaler`<br>Balancing: `class_weight='balanced'` (Strictly NO SMOTE)** | Zero data leakage; handles unseen test protocols (`icmp`, `rtp`) and states (`no`, `PAR`, `ECO`, `URN`); preserves physical network packet laws without synthetic KNN distortion. |
 | **DEC-005** | **Real-Time Threat Detection PoC** | **Inference Latency Benchmark ($\mu\text{s}$/flow, flows/sec) + Simulated SIEM Streaming Alert Engine** | Empirically proves line-rate suitability on 1 Gbps / 10 Gbps network trunks; outputs real-time alert logs with timestamps, category, and confidence. |
-| **DEC-006** | **Deliverables & Report Specification** | **5–6 Page Academic MS Word Document + GitHub Repo + Defense Map** | Authored for Dr. Nadeem Sarwar with professional typography, corporate color palette, embedded high-DPI figures, and complete viva defense mappings. |
+| **DEC-006** | **Deliverables & Report Specification** | **5–6 Page Academic MS Word Document + GitHub Repo** | Authored for Dr. Nadeem Sarwar with professional typography, corporate color palette and embedded high-DPI figures. |
 | **DEC-007** | **Git & GitHub Engineering Workflow** | **Strict Feature-Branch Git Strategy (`feature/phase-X-...` $\rightarrow$ Validate $\rightarrow$ Merge into `main` $\rightarrow$ Push)** | Professional version control; no direct unvalidated commits to `main`; each module built in isolation, validated against criteria, merged with descriptive messages, and pushed to remote. |
 | **DEC-008** | **Empirical Proof & Insight Standard** | **Every Design Decision Backed by Visual & Statistical Proofs (EDA, Skewness, Threshold, Latency)** | In ML, implementations without empirical proof are unvalidated claims. Every transformation, model choice, and threshold shift must be visibly demonstrated with high-DPI charts and statistical distributions. |
 | **DEC-009** | **Frontend SOC Web Dashboard** | **FastAPI + Bespoke Cyber Dashboard (HTML5, Modern CSS Glassmorphism, Chart.js, Zero-npm setup)** | Provides an interactive SOC experience: executive KPI telemetry, live-streaming threat simulator, single-flow manual inspector with preset attack injections, and batch CSV uploader. Zero Node.js friction for the examiner. |
@@ -197,7 +197,7 @@ The implementation must define a dedicated simulation module:
 
 ### C. GitHub Repository (`CLO4-IDS-ML-Solution`)
 - Clean root directory with:
-  - `README.md` (Rich markdown, shields/badges, executive overview, architecture diagram, installation guide, execution commands, performance table, embedded SIEM alert screenshots, viva summary).
+  - `README.md` (Rich markdown, shields/badges, executive overview, architecture diagram, installation guide, execution commands, performance table, embedded SIEM alert screenshots).
   - `requirements.txt` (Pinned package versions).
   - `.gitignore` (Ignores `__pycache__`, `.ipynb_checkpoints`, raw dumps, and temporary files).
   - `dataset/` (Contains scripts or instructions to locate datasets).
@@ -229,19 +229,7 @@ A high-performance, single-command Python web dashboard (`python -m src.app` on 
 
 ---
 
-## 8. Viva Defense Map (Oral Examination Preparation)
-
-| Oral Defense Question | Technical Justification | Core Keywords |
-|---|---|---|
-| *Why did you select UNSW-NB15 instead of KDD99 or NSL-KDD?* | KDD99 is over 25 years old; its synthetic traffic lacks modern exploits, contains redundant records, and distorts protocol behaviors. UNSW-NB15 was created on IXIA PerfectStorm testbeds with modern CVE attacks (Fuzzers, Shellcode, Worms) and realistic traffic diversity. | Modern CVEs, IXIA PerfectStorm, Protocol Diversity, Realism |
-| *How did you ensure zero data leakage between training and testing?* | The split was performed prior to any data transformation. All one-hot encoders and robust scalers were fit strictly on the 80% training partition and applied to the 20% test partition. Row identifiers (`id`) and target labels were completely isolated. | Fit-Transform Isolation, Stratified Partitioning, Identifier Stripping |
-| *Why is False Negative rate more dangerous than False Positive in an IDS?* | A False Positive generates an alert for benign traffic, consuming SOC analyst triage time. A False Negative allows an active attacker to penetrate the perimeter, establish persistence, and execute lateral movement or data exfiltration undetected. | Breach Risk, Alert Fatigue, Asymmetric Cost Function |
-| *Why did you reject SMOTE for handling minority attack classes?* | SMOTE performs k-nearest-neighbor interpolation in continuous Euclidean space. In network flow data, this synthesizes physically impossible packets (e.g. fractional TCP flags or illegal packet-to-byte ratios). Instead, `class_weight='balanced_subsample'` penalizes minority errors mathematically during tree construction without corrupting data physics. | Synthetic Packet Corruption, Euclidean Interpolation, Class Weighting |
-| *How does your system satisfy "real-time threat detection"?* | Model latency profiles at $< 50\,\mu\text{s}$ per flow on commodity CPU cores, translating to $> 20,000$ flows/second. This throughput easily sustains multi-gigabit corporate internet trunks without buffer overflow or packet dropping. | Sub-millisecond Latency, Flow Throughput, Wire-Speed Capacity |
-
----
-
-## 9. Empirical Proofs & Insight-Driven Decision Framework
+## 8. Empirical Proofs & Insight-Driven Decision Framework
 
 In Machine Learning and cybersecurity engineering, an implementation without empirical proof is merely an unverified assertion. Every architectural and preprocessing decision in this project must be grounded in and proved by concrete visual and statistical telemetry:
 
@@ -258,7 +246,7 @@ In Machine Learning and cybersecurity engineering, an implementation without emp
 
 ---
 
-## 10. Strict Git & GitHub Workflow Protocol (Feature-Branch Strategy)
+## 9. Strict Git & GitHub Workflow Protocol (Feature-Branch Strategy)
 
 To ensure production-level repository health and complete auditability:
 1. **Protected `main` Branch:** No unreviewed, unvalidated code may be committed directly to `main`.
@@ -292,7 +280,7 @@ To ensure production-level repository health and complete auditability:
 
 ---
 
-## 11. Manual Human Action Register & Checkpoints
+## 10. Manual Human Action Register & Checkpoints
 
 This project has been deliberately architected with **zero external cloud APIs, zero proprietary services, and zero paid tokens**. The machine learning models, preprocessing pipelines, web dashboard, and report automation run 100% locally and offline.
 
@@ -303,16 +291,15 @@ However, to ensure human oversight and compliance with university policies, Clau
 | **CP-1: Git Remote Auth** | **Phase 0** | Configures remote `origin`, stages initial files, and runs `git push -u origin main`. | **Credential Prompt:** If your local Git is not already cached with your GitHub credentials, Claude Code will ask you to authorize or enter your GitHub credentials/PAT in your terminal. |
 | **CP-2: Dashboard Review** | **Phase 7** | Builds FastAPI server (`src/app.py`), static dark-mode UI (`src/web/`), and launches server. | **Visual Inspection:** Open `http://localhost:8000` in your browser, test the 4 views (Telemetry, Live Stream, Single-Flow Inspector, CSV Uploader), and confirm you approve the visual design. |
 | **CP-3: Report Layout Check** | **Phase 9** | Programmatically generates `reports/Project_Report_CLO4.docx` with your student details and embedded figures. | **Pagination & LMS Check:** Open `Project_Report_CLO4.docx` in Microsoft Word on your machine to verify that the page count is strictly 5–6 pages (excluding cover) before final LMS submission. |
-| **CP-4: Oral Viva Defense** | **Phase 10 / Post** | Generates the comprehensive Viva Defense Map in `README.md` and report. | **Oral Defense:** Present and defend your technical decisions in the mandatory viva with Dr. Nadeem Sarwar using the provided Viva Defense Map! |
 
 ---
 
-## 12. Definition of Done (Quality Gate)
+## 11. Definition of Done (Quality Gate)
 The project is complete if and only if:
 1. All code executes cleanly from top to bottom with zero errors in a clean Python 3.10/3.11/3.12 environment.
 2. The champion model achieves an authentic test **Accuracy, Attack Recall, and F1-Score $\ge 95\%$**.
 3. All high-resolution figures (`eda_*.png`, `confusion_matrix.png`, `feature_importance.png`, `attack_recall_breakdown.png`, `latency_throughput.png`) are saved to `figures/`.
 4. The interactive SOC Web Dashboard is fully functional in `src/web/` and launches via `python -m src.app`.
 5. `Project_Report_CLO4.docx` is fully generated, strictly 5–6 pages (excluding cover), formatted with student metadata, professional typography, and embedded visual proofs.
-6. `README.md` is complete, beautiful, and includes sample screens and viva defense notes.
+6. `README.md` is complete, beautiful, and includes sample screens.
 7. The entire repository is committed through disciplined feature branches and pushed to `https://github.com/Nafay-Aftab/CLO4-IDS-ML-Solution`.

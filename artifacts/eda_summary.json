@@ -1,0 +1,75 @@
+{
+  "rows_training_file": 82332,
+  "rows_testing_file": 175341,
+  "rows_total": 257673,
+  "columns_total": 45,
+  "features": 42,
+  "categorical_features": 3,
+  "numerical_features": 39,
+  "null_cells": 0,
+  "inf_cells": 0,
+  "bom_in_headers": false,
+  "duplicate_feature_rows": 103989,
+  "duplicate_groups_with_conflicting_labels": 414,
+  "label_counts": {
+    "0": 93000,
+    "1": 164673
+  },
+  "attack_cat_counts": {
+    "Normal": 93000,
+    "Generic": 58871,
+    "Exploits": 44525,
+    "Fuzzers": 24246,
+    "DoS": 16353,
+    "Reconnaissance": 13987,
+    "Analysis": 2677,
+    "Backdoor": 2329,
+    "Shellcode": 1511,
+    "Worms": 174
+  },
+  "n_unique": {
+    "proto": 133,
+    "service": 13,
+    "state": 11
+  },
+  "skewness_raw": {
+    "sbytes": 47.92,
+    "dbytes": 44.34,
+    "sload": 8.93,
+    "dur": 8.02
+  },
+  "skewness_log1p": {
+    "sbytes": 1.15,
+    "dbytes": 0.33,
+    "sload": -0.41,
+    "dur": 3.35
+  },
+  "orders_of_magnitude": {
+    "sbytes": 5.8,
+    "dbytes": 5.7,
+    "sload": 10.0,
+    "dur": 7.8
+  },
+  "top_collinear_pairs": {
+    "is_ftp_login ~ ct_ftp_cmd": 1.0,
+    "trans_depth ~ ct_flw_http_mthd": 1.0,
+    "tcprtt ~ synack": 0.996,
+    "tcprtt ~ ackdat": 0.993,
+    "dpkts ~ dbytes": 0.989,
+    "synack ~ ackdat": 0.982,
+    "swin ~ dwin": 0.981,
+    "dload ~ dmean": 0.963,
+    "dbytes ~ dmean": 0.961,
+    "rate ~ sload": 0.96
+  },
+  "top_label_correlations": {
+    "sttl": 0.66,
+    "ct_state_ttl": 0.586,
+    "dload": 0.585,
+    "dmean": 0.517,
+    "dbytes": 0.468,
+    "dpkts": 0.465,
+    "ct_dst_sport_ltm": 0.464,
+    "sloss": 0.39
+  }
+}
